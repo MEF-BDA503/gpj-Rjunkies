@@ -1,0 +1,58 @@
+---
+title: "Case Study: Welcome to University"
+author: "R Junkies"
+output: github_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(Encoding="windows-1254")
+```
+
+## Introduction
+
+In this case study we are going to explore university entrance examinations (YGS/LYS) data from 2017. Data consists of undergraduate programs offered in 2017. Each program offers an availability (i.e. quota). Then students get placed according to their lists and their scores. Each program is filled with the students ranked by their scores until placements are equal to availability. Student placed to a a program with the highest score forms the maximum score of that program and the last student to be placed forms the minimum score.
+
+## Data Loading
+
+```{r, include=TRUE, message=FALSE}
+# Download from GitHub (do it only once)
+download.file("https://mef-bda503.github.io/files/osym_data_2017.RData", "osym_data_2017.RData")
+# Install tidyverse if not already installed
+if (!("tidyverse" %in% installed.packages())) {
+    install.packages("tidyverse", repos = "https://cran.r-project.org")
+}
+# Load tidyverse package
+library(tidyverse)
+# Load the data
+load("osym_data_2017.RData")
+```
+
+
+## Quota of Universities in Istanbul
+
+This data shows quota of universities in Istanbul
+
+```{r, include=TRUE}
+university_quota <- osym_data_2017 %>%
+    group_by(university_name) %>%
+    filter(city=='İSTANBUL') %>%
+    summarise(count=n()) %>%
+    arrange(desc(count))
+
+university_quota
+
+```
+
+Let's visualize this data in barchart.
+
+```{r, include=TRUE}
+ggplot(data=university_quota,aes(x=reorder(university_name,-count) , y=count)) +
+  geom_bar(stat='identity') +
+             labs(title="Quota of University in Istanbul",x="University Name",y="Count", fill="") +
+             theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0))
+
+```
+
+## Quota of Universities in Istanbul
