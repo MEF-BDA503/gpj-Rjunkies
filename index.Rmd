@@ -48,10 +48,11 @@ university_quota
 Let's visualize this data in barchart.
 
 ```{r, include=TRUE}
-ggplot(data=university_quota,aes(x=reorder(university_name,-count) , y=count)) +
-  geom_bar(stat='identity') +
-             labs(title="Quota of University in Istanbul",x="University Name",y="Count", fill="") +
-             theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0))
+ggplot(university_quota, aes(x=reorder(university_name,-count), y=count)) +
+  geom_bar(stat = "identity", aes(fill=university_quota$university_name=='MEF ÜNİVERSİTESİ')) +
+  labs(title="Quota of University in Istanbul",x="University",y="Count",fill="") +
+  theme (axis.text.x=element_text (angle=-90,vjust=0.5, hjust=0)) +
+  scale_fill_manual(values = c('#707070', 'red'),guide=FALSE)
 
 ```
 
@@ -73,9 +74,10 @@ Let's visualize this data in barchart.
 
 ```{r, include=TRUE}
 ggplot(question2, aes(x=reorder(university_name,-max_puan), y=max_puan)) +
-  geom_bar(stat = "identity", aes(fill=ifelse(question2$university_name == 'MEF ÜNİVERSİTESİ',"blue","red"))) +
+  geom_bar(stat = "identity", aes(fill=question2$university_name=='MEF ÜNİVERSİTESİ')) +
   labs(title="Maximum score of each university",x="University",y="Maximum score",fill="") +
-  theme (axis.text.x=element_text (angle=-90,vjust=2,hjust=0))
+  theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0)) +
+  scale_fill_manual(values = c('#707070', 'red'),guide=FALSE)
 
 ```
 
@@ -96,9 +98,10 @@ question3
 Let's visualize this data in barchart.
 
 ```{r, include=TRUE}
-ggplot(question3,aes(x=reorder(university_name,-bolum_sayisi),y=bolum_sayisi))+
-  geom_bar(stat ="identity",aes(fill=ifelse(question3$university_name=='MEF ÜNİVERSİTESİ',"blue","red")))+
-  labs(title='Number of Departments of Universities in İstanbul',x='University',y='Departments',fill="")+
-  theme(axis.text.x=element_text(angle=-90,vjust=0.5,hjust=0))
+ggplot(question3, aes(x=reorder(university_name,-bolum_sayisi), y=bolum_sayisi)) +
+  geom_bar(stat = "identity", aes(fill=question3$university_name=='MEF ÜNİVERSİTESİ')) +
+  labs(title="Number of Departments of Universities in İstanbul",x="University",y="Departments",fill="") +
+  theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0)) +
+  scale_fill_manual(values = c('#707070', 'red'),guide=FALSE)
 
 ```
