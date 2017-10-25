@@ -1,0 +1,127 @@
+---
+title: "Case Study: Welcome to University"
+author: "R Junkies"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(Encoding="UTF-8")
+```
+
+<br>
+
+## Introduction
+
+In this case study we are going to explore university entrance examinations (YGS/LYS) dataset from 2017. Dataset consists of undergraduate programs offered in 2017. Each program offers an availability (i.e. quota). Then students get placed according to their lists and their scores. Each program is filled with the students ranked by their scores until placements are equal to availability. Student placed to a a program with the highest score forms the maximum score of that program and the last student to be placed forms the minimum score.
+
+<br>
+
+## Load Data
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# Download dataset from GitHub (do it only once)
+download.file("https://mef-bda503.github.io/files/osym_data_2017.RData", "osym_data_2017.RData")
+
+# Load tidyverse package
+library(tidyverse)
+
+# Load the data
+load("osym_data_2017.RData")
+```
+
+<br>
+
+## Number of University Departmens
+
+The table below shows the number of university departments in Istanbul.
+
+<br>
+
+```{r, include=TRUE}
+university_departments <- osym_data_2017 %>%
+    group_by(University_Name=university_name) %>%
+    filter(city=='İSTANBUL') %>%
+    summarise(Departments=n()) %>%
+    arrange(desc(Departments))
+
+university_departments
+
+```
+
+<br>
+
+Let's visualize this data in a barchart.
+
+<br>
+
+```{r, include=TRUE}
+ggplot(university_departments, aes(x=reorder(University_Name,-Departments), y=Departments)) +
+  geom_bar(stat = "identity", aes(fill=university_departments$University_Name=='MEF ÜNİVERSİTESİ')) +
+  labs(title="# of University Departments in Istanbul",x="University",y="# of Deparments",fill="") +
+  theme (axis.text.x=element_text (angle=-90,vjust=0.5, hjust=0)) +
+  scale_fill_manual(values = c('#707070', 'red'),guide=FALSE)
+
+```
+
+<br>
+
+## Maximum Scores of Universities in Istanbul
+
+```{r, include=TRUE}
+maximum_scores <- osym_data_2017 %>%
+  select(University_Name=university_name, max_score, city) %>%
+  filter(city=='İSTANBUL') %>%
+  group_by(University_Name) %>%
+  summarise(Max_Score=max(max_score)) %>%
+  arrange(desc(Max_Score))
+
+maximum_scores
+
+```
+
+Let's visualize this data in a barchart.
+
+<br>
+
+```{r, include=TRUE}
+ggplot(maximum_scores, aes(x=reorder(University_Name,-Max_Score), y=Max_Score)) +
+  geom_bar(stat = "identity", aes(fill=University_Name=='MEF ÜNİVERSİTESİ')) +
+  labs(title="Maximum Score of Each University",x="University",y="Maximum score",fill="") +
+  theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0)) +
+  scale_fill_manual(values = c('#707070', 'red'),guide=FALSE)
+
+```
+
+<br>
+
+## University Department Quotas in Istanbul
+
+<br>
+
+```{r, include=TRUE}
+department_quota <- osym_data_2017 %>% 
+  select(University_Name=university_name,general_quota,city) %>% 
+  filter(city=='İSTANBUL') %>%
+  group_by(University_Name) %>% 
+  summarise(General_Quota=sum(general_quota)) %>% 
+  arrange(desc(General_Quota))
+
+department_quota
+
+```
+
+<br>
+
+Let's visualize this data in a barchart.
+
+<br>
+
+```{r, include=TRUE}
+ggplot(department_quota, aes(x=reorder(University_Name,-General_Quota), y=General_Quota)) +
+  geom_bar(stat = "identity", aes(fill=University_Name=='MEF ÜNİVERSİTESİ')) +
+  labs(title="University Department Quotas in İstanbul",x="University",y="Quota",fill="") +
+  theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0)) +
+  scale_fill_manual(values = c('#707070', 'red'),guide=FALSE)
+
+```

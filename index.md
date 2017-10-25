@@ -1,5 +1,9 @@
 # R Junkies - The Progress Journal
 
+## Week 3  (Oct 26)
+
+We made major mistakes in wording and visualizations during class time. We've fixed them and also solved the UTF-8 Turkish Character problem. You can find the second analysis [here](files/analysis2.html).
+
 ## Week 3  (Oct 24)
 
 Now we call ourselves "R Junkies". We've started working on OSYM dataset. You can find the initial analysis [here](files/analysis1.html).
@@ -12,4 +16,4 @@ Today we've built our project group. We haven't decided on a name and our datase
 + [Yağmur Ulutürk Tekten](https://mef-bda503.github.io/pj-uluturktekteny/)
 + [Rezan Azizoğlu](https://mef-bda503.github.io/pj-rezan/)
 + [Cem Gürkan](https://mef-bda503.github.io/pj-gurkanc/)
-+ [Semih Tekten](https://mef-bda503.github.io/pj-tektens/) (Me)
++ [Semih Tekten](https://mef-bda503.github.io/pj-tektens/)
