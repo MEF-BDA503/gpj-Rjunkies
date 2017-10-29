@@ -1,5 +1,9 @@
 # R Junkies - The Progress Journal
 
+## Week 3  (Oct 29)
+
+Our dataset is Airplane Crash from 1908 to 2017. [Here](files/proposal.html) you can find our project proposal.
+
 ## Week 3  (Oct 26)
 
 We made major mistakes in wording and visualizations during class time. We've fixed them and also solved the UTF-8 Turkish Character problem. You can find the second analysis [here](files/analysis2.html).
