@@ -9,22 +9,50 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Group Details
+
+**Group Name    :**  R Junkies   
+
+**Group Members :**  
+
++ [Yaðmur Ulutürk Tekten](https://mef-bda503.github.io/pj-uluturktekteny/)  
++ [Rezan Azizoðlu](https://mef-bda503.github.io/pj-rezan/)  
++ [Cem Gürkan](https://mef-bda503.github.io/pj-gurkanc/)  
++ [Semih Tekten](https://mef-bda503.github.io/pj-tektens/)  
+
 ## Objective:
 
-In this paper, we analyze the causes of aviation accidents that occured worlwide between 1909 from 2017. Base for this analyze is in this [Kaggle Dataset](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908). Data we analyze contains date, location of accidents, which fligts, what it's route and  type of plane and other information about flights. 
+In this paper, we analyze the causes of aviation accidents that occured worlwide between 1909 from 2017. Base for this analyze is in this page [Kaggle Dataset](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908). 
+Data we analyze contains date, location of accidents, which fligts, what it's route and type of plane and other information about flights. 
 
 In order to answer below questions We'd like to enrich data by using different [sources](#DataReferences)
 
 By analyzing we'd like answer following questions (*list is not finalized*)
 
 - Cause of Airplane Crashes
+- Fatalities by Phase of Flight
+- People dead/alive in crashes
 - How many people dies in each year?
 - How many plane crashed in each year?
-- People dead/alive in crashes
 - Top 100 worst plane crash
 - Top plane crash involving Turkey Carriers
-- Plane Types
-- Fatalities by Phase of Flight..
+- Crash Trend by Plane Types
+
+## Dataset
+
+Dataset contains 5268 observations and 13 variables.
+
+## Plan
+
+Activity | Deadline
+------------- | -------------
+Proposal Phas | Oct. 29 (EOD)
+Peer Review of Proposal Phase | Oct. 31 (EOD) 
+Minimal Working Report| Dec 1 (EOD)
+Minimal Working Report Peer Review | Dec. 8 (EOD)
+Final Report / Presentation| Dec 15 (EOD)
+FR/Presentation Peer Review | Dec 22  (EOD)
+
 
 ## Data References: {#DataReferences}
 
