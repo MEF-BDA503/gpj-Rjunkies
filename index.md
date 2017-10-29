@@ -2,7 +2,7 @@
 
 ## Week 3  (Oct 26)
 
-We made major mistakes in wording and visualizations during class time. We've fixed them and also solved the UTF-8 Turkish Character problem. You can find the second analysis [here](files/analysis2.html).
+We made major mistakes in wording and visualizations during class time. We've fixed them and also solved the UTF-8 Turkish Character problem. You can find the second analysis [here](files/analysis2update.html).
 
 ## Week 3  (Oct 24)
 
