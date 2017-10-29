@@ -1,0 +1,40 @@
+---
+title: "Airplane Crash :Cause of Accidents"
+author: "R Junkies - BDA 503 - Fall 2017"
+date: "29 Ekim 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Objective:
+
+In this paper, we analyze the causes of aviation accidents that occured worlwide between 1909 from 2017. Base for this analyze is in this [Kaggle Dataset](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908). Data we analyze contains date, location of accidents, which fligts, what it's route and  type of plane and other information about flights. 
+
+In order to answer below questions We'd like to enrich data by using different [sources](#DataReferences)
+
+By analyzing we'd like answer following questions (*list is not finalized*)
+
+- Cause of Airplane Crashes
+- How many people dies in each year?
+- How many plane crashed in each year?
+- People dead/alive in crashes
+- Top 100 worst plane crash
+- Top plane crash involving Turkey Carriers
+- Plane Types
+- Fatalities by Phase of Flight..
+
+## Data References: {#DataReferences}
+
+Sources used to compile datasets are:
+
+[ASN Aviation Safety Database](https://aviation-safety.net/database/)  
+[Kaggle | Airplane Crashes Since 1908](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908)  
+[Socrata | Airplane Crashes Since 1908](https://opendata.socrata.com/Government/Airplane-Crashes-and-Fatalities-Since-1908/q2te-8cvq)  
+[Airplane Crash Statistics](http://www.statisticbrain.com/airplane-crash-statistics/)  
+[List of accidents and incidents involving commercial aircraft](https://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9hY2NpZGVudHNfYW5kX2luY2lkZW50c19pbnZvbHZpbmdfY29tbWVyY2lhbF9haXJjcmFmdA)
+[Bureau of Aircraft Accidents Archives](http://www.baaa-acro.com/general-statistics/)
+[Aviation Safety Reporting Systems](https://asrs.arc.nasa.gov/search/database.html)
+[Statistical Summary of Commercial Jet Airplane Accidents Worldwide Operations | 1959 – 2016](http://www.boeing.com/resources/boeingdotcom/company/about_bca/pdf/statsum.pdf)
