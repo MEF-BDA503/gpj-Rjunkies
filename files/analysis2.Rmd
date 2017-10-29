@@ -125,3 +125,38 @@ ggplot(department_quota, aes(x=reorder(University_Name,-General_Quota), y=Genera
   scale_fill_manual(values = c('#707070', 'red'),guide=FALSE)
 
 ```
+
+
+
+<br>
+
+## Listing Programs in MEF by scores
+
+<br>
+
+```{r, include=TRUE}
+maximum_scores <- osym_data_2017 %>%
+  select(university_name,program_name,max_score) %>%
+  filter(university_name=='MEF ÜNİVERSİTESİ') %>%
+  group_by(program_name) %>%
+  summarise(Max_Score=max(max_score)) %>%
+  arrange(desc(Max_Score))
+  
+maximum_scores
+  
+  ```
+
+<br>
+
+Let's visualize this data in a barchart.
+
+<br>
+  
+
+
+```{r, include=TRUE}
+ggplot(maximum_scores, aes(x=reorder(program_name,-Max_Score), y=Max_Score)) +
+  geom_bar(stat = "identity") +
+  labs(title="Maximum Score of Programs on MEF University",x="Programs",y="Maximum score",fill="") +
+  theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0)) +
+  scale_fill_manual(values = if_else(maximum_scores>445, '#707070',"red"),guide=FALSE)
