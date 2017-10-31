@@ -1,6 +1,6 @@
-# R Junkies - The Progress Journal
-
 ## Week 3  (Oct 29)
+
+*Update:Due to UTF-8 problem. Github doesn't allow to update proposal page.Problem is solved. [Updated:31/10/2017]*
 
 Our dataset is Airplane Crash from 1908 to 2017. [Here](files/AviationCrashProposal.html) you can find our project proposal.
 
