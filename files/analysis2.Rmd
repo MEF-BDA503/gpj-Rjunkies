@@ -1,7 +1,11 @@
 ---
 title: "Case Study: Welcome to University"
 author: "R Junkies"
-output: html_document
+date: "24 Ekim 2017"
+output: 
+  html_document: 
+    highlight: zenburn
+    theme: lumen
 ---
 
 ```{r setup, include=FALSE}
@@ -30,13 +34,9 @@ library(tidyverse)
 load("osym_data_2017.RData")
 ```
 
-<br>
-
 ## Number of University Departmens
 
 The table below shows the number of university departments in Istanbul.
-
-<br>
 
 ```{r, include=TRUE}
 university_departments <- osym_data_2017 %>%
@@ -49,11 +49,8 @@ university_departments
 
 ```
 
-<br>
-
 Let's visualize this data in a barchart.
 
-<br>
 
 ```{r, include=TRUE}
 ggplot(university_departments, aes(x=reorder(University_Name,-Departments), y=Departments)) +
@@ -63,8 +60,6 @@ ggplot(university_departments, aes(x=reorder(University_Name,-Departments), y=De
   scale_fill_manual(values = c('#707070', 'red'),guide=FALSE)
 
 ```
-
-<br>
 
 ## Maximum Scores of Universities in Istanbul
 
@@ -82,8 +77,6 @@ maximum_scores
 
 Let's visualize this data in a barchart.
 
-<br>
-
 ```{r, include=TRUE}
 ggplot(maximum_scores, aes(x=reorder(University_Name,-Max_Score), y=Max_Score)) +
   geom_bar(stat = "identity", aes(fill=University_Name=='MEF ÜNİVERSİTESİ')) +
@@ -93,11 +86,7 @@ ggplot(maximum_scores, aes(x=reorder(University_Name,-Max_Score), y=Max_Score)) 
 
 ```
 
-<br>
-
 ## University Department Quotas in Istanbul
-
-<br>
 
 ```{r, include=TRUE}
 department_quota <- osym_data_2017 %>% 
@@ -111,11 +100,7 @@ department_quota
 
 ```
 
-<br>
-
 Let's visualize this data in a barchart.
-
-<br>
 
 ```{r, include=TRUE}
 ggplot(department_quota, aes(x=reorder(University_Name,-General_Quota), y=General_Quota)) +
@@ -126,13 +111,7 @@ ggplot(department_quota, aes(x=reorder(University_Name,-General_Quota), y=Genera
 
 ```
 
-
-
-<br>
-
 ## Listing Programs in MEF by scores
-
-<br>
 
 ```{r, include=TRUE}
 maximum_scores <- osym_data_2017 %>%
@@ -144,14 +123,9 @@ maximum_scores <- osym_data_2017 %>%
   
 maximum_scores
   
-  ```
-
-<br>
+```
 
 Let's visualize this data in a barchart.
-
-<br>
-  
 
 
 ```{r, include=TRUE}
@@ -160,3 +134,4 @@ ggplot(maximum_scores, aes(x=reorder(program_name,-Max_Score), y=Max_Score)) +
   labs(title="Maximum Score of Programs on MEF University",x="Programs",y="Maximum score",fill="") +
   theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0)) +
   scale_fill_manual(values = if_else(maximum_scores>445, '#707070',"red"),guide=FALSE)
+```
