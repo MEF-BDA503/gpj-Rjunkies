@@ -2,11 +2,15 @@
 title: "Airplane Crash :Cause of Accidents"
 author: "R Junkies - BDA 503 - Fall 2017"
 date: "29 Ekim 2017"
-output: html_document
+output: 
+  html_document: 
+    highlight: textmate
+    theme: sandstone
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(Encoding="UTF-8")
 ```
 
 ## Group Details
@@ -15,9 +19,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **Group Members :**  
 
-+ [Ya�mur Ulut�rk Tekten](https://mef-bda503.github.io/pj-uluturktekteny/)  
-+ [Rezan Azizo�lu](https://mef-bda503.github.io/pj-rezan/)  
-+ [Cem G�rkan](https://mef-bda503.github.io/pj-gurkanc/)  
++ [Yağmur Ulutürk Tekten](https://mef-bda503.github.io/pj-uluturktekteny/)  
++ [Rezan Azizoğlu](https://mef-bda503.github.io/pj-rezan/)  
++ [Cem Gürkan](https://mef-bda503.github.io/pj-gurkanc/)  
 + [Semih Tekten](https://mef-bda503.github.io/pj-tektens/)  
 
 ## Objective:
@@ -65,4 +69,4 @@ Sources used to compile datasets are:
 [List of accidents and incidents involving commercial aircraft](https://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9hY2NpZGVudHNfYW5kX2luY2lkZW50c19pbnZvbHZpbmdfY29tbWVyY2lhbF9haXJjcmFmdA)
 [Bureau of Aircraft Accidents Archives](http://www.baaa-acro.com/general-statistics/)
 [Aviation Safety Reporting Systems](https://asrs.arc.nasa.gov/search/database.html)
-[Statistical Summary of Commercial Jet Airplane Accidents Worldwide Operations | 1959 – 2016](http://www.boeing.com/resources/boeingdotcom/company/about_bca/pdf/statsum.pdf)
+[Statistical Summary of Commercial Jet Airplane Accidents Worldwide Operations | 1959 â€“ 2016](http://www.boeing.com/resources/boeingdotcom/company/about_bca/pdf/statsum.pdf)
