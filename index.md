@@ -1,7 +1,7 @@
 ## Week 4  (Nov 7)
 
 OSYM Data is updated to v2. With new data, We see that General_quota type is changed from integer to character. 
-You can find the third analysis [here](files/analysis3.html).
+You can find the third analysis [here](files/Analysis3.html).
 
 We learned how to pass variable to ggplot.
 
