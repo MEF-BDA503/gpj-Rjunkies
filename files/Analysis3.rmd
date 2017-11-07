@@ -1,16 +1,18 @@
 ---
-title: "Case Study: Welcome to University"
+title: 'Case Study: Welcome to University'
 author: "R Junkies"
 date: "24 Ekim 2017"
-output: 
-  html_document: 
+output:
+  html_document:
     highlight: zenburn
     theme: lumen
+    toc: yes
+  
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-options(Encoding="UTF-8")
+options(Encoding="windows-1254")
 ```
 
 <br>
@@ -25,13 +27,16 @@ In this case study we are going to explore university entrance examinations (YGS
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 # Download dataset from GitHub (do it only once)
-download.file("https://mef-bda503.github.io/files/osym_data_2017.RData", "osym_data_2017.RData")
+download.file("https://mef-bda503.github.io/files/osym_data_2017_v2.RData", "osym_data_2017.RData")
 
 # Load tidyverse package
 library(tidyverse)
 
 # Load the data
 load("osym_data_2017.RData")
+
+#Set locale
+Sys.setlocale (locale="Turkish_Turkey.1254")
 ```
 
 ## Number of University Departmens
@@ -41,7 +46,7 @@ The table below shows the number of university departments in Istanbul.
 ```{r, include=TRUE}
 university_departments <- osym_data_2017 %>%
     group_by(University_Name=university_name) %>%
-    filter(city=='İSTANBUL') %>%
+    filter(city=='İSTANBUL' & substr(program_id,0,1)=="2") %>%
     summarise(Departments=n()) %>%
     arrange(desc(Departments))
 
@@ -65,8 +70,8 @@ ggplot(university_departments, aes(x=reorder(University_Name,-Departments), y=De
 
 ```{r, include=TRUE}
 maximum_scores <- osym_data_2017 %>%
-  select(University_Name=university_name, max_score, city) %>%
-  filter(city=='İSTANBUL') %>%
+  select(University_Name=university_name, max_score, city, program_id) %>%
+  filter(city=='İSTANBUL' & substr(program_id,0,1)=="2") %>%
   group_by(University_Name) %>%
   summarise(Max_Score=max(max_score)) %>%
   arrange(desc(Max_Score))
@@ -90,10 +95,10 @@ ggplot(maximum_scores, aes(x=reorder(University_Name,-Max_Score), y=Max_Score)) 
 
 ```{r, include=TRUE}
 department_quota <- osym_data_2017 %>% 
-  select(University_Name=university_name,general_quota,city) %>% 
-  filter(city=='İSTANBUL') %>%
+  select(University_Name=university_name,general_quota,city,program_id) %>% 
+  filter(city=='İSTANBUL' & substr(program_id,0,1)=="2") %>%
   group_by(University_Name) %>% 
-  summarise(General_Quota=sum(general_quota)) %>% 
+  summarise(General_Quota=sum(as.integer(general_quota))) %>% 
   arrange(desc(General_Quota))
 
 department_quota
@@ -105,7 +110,7 @@ Let's visualize this data in a barchart.
 ```{r, include=TRUE}
 ggplot(department_quota, aes(x=reorder(University_Name,-General_Quota), y=General_Quota)) +
   geom_bar(stat = "identity", aes(fill=University_Name=='MEF ÜNİVERSİTESİ')) +
-  labs(title="University Department Quotas in İstanbul",x="University",y="Quota",fill="") +
+  labs(title="University Department Quotas in Istanbul",x="University",y="Quota",fill="") +
   theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0)) +
   scale_fill_manual(values = c('#707070', 'red'),guide=FALSE)
 
@@ -125,13 +130,25 @@ maximum_scores
   
 ```
 
-Let's visualize this data in a barchart.
+Let's find Score in top %10 percentile
+```{r, include=TRUE}
+quantile_scores <- osym_data_2017 %>%
+  select(city,max_score,program_id)%>%
+  filter(city=='İSTANBUL' & substr(program_id,0,1)=="2") %>%
+  summarise(Quantile_Score=quantile(max_score,c(.90))) %>%
+  arrange(desc(Quantile_Score))
+  
+q10 <- quantile_scores
+quantile_scores
+```
 
+Let's visualize this data in a barchart.
 
 ```{r, include=TRUE}
 ggplot(maximum_scores, aes(x=reorder(program_name,-Max_Score), y=Max_Score)) +
-  geom_bar(stat = "identity", aes(fill=Max_Score>445)) +
+  geom_bar(stat = "identity", aes(fill=Max_Score>q10[[1]])) +
   labs(title="Maximum Score of Programs on MEF University",x="Programs",y="Maximum score",fill="") +
   theme (axis.text.x=element_text (angle=-90,vjust=0.5,hjust=0)) +
   scale_fill_manual(values = c('#707070',"red"),guide=FALSE)
 ```
+
