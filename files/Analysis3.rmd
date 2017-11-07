@@ -105,7 +105,9 @@ department_quota
 
 ```
 
+
 Let's visualize this data in a barchart.
+
 
 ```{r, include=TRUE}
 ggplot(department_quota, aes(x=reorder(University_Name,-General_Quota), y=General_Quota)) +
@@ -116,7 +118,9 @@ ggplot(department_quota, aes(x=reorder(University_Name,-General_Quota), y=Genera
 
 ```
 
+
 ## Listing Programs in MEF by scores
+
 
 ```{r, include=TRUE}
 maximum_scores <- osym_data_2017 %>%
@@ -131,6 +135,7 @@ maximum_scores
 ```
 
 Let's find Score in top %10 percentile
+
 ```{r, include=TRUE}
 quantile_scores <- osym_data_2017 %>%
   select(city,max_score,program_id)%>%
@@ -144,6 +149,7 @@ quantile_scores
 
 Let's visualize this data in a barchart.
 
+
 ```{r, include=TRUE}
 ggplot(maximum_scores, aes(x=reorder(program_name,-Max_Score), y=Max_Score)) +
   geom_bar(stat = "identity", aes(fill=Max_Score>q10[[1]])) +
@@ -152,3 +158,20 @@ ggplot(maximum_scores, aes(x=reorder(program_name,-Max_Score), y=Max_Score)) +
   scale_fill_manual(values = c('#707070',"red"),guide=FALSE)
 ```
 
+## Conclusion
+
+Our findings and suggestions to MEF University Management:
+
+We compared MEF University with other Private/Foundation universities in Istanbul.
+
+1. Less number of departmants compared to others => Should increase for more students by establishing new programs
+2. Best students seems that they don't prefer MEF => Should incentivize best students
+3. Less department quota compared to others => Should increase for more students by increasing department quotas
+4. Following departments stands for the 10% percentile among other universities:
+    Hukuk (Tam Burslu)
+    İngilizce Öğretmenliği
+    Psikoloji (İngilizce) Tam Burslu
+    İngilizce Öğretmenliği (%75 Burslu)
+    Bilgisayar Mühendisliği (İngilizce, Tam Burslu)
+
+These departmants mostly belong to "TM". Should increase performance in "MF".
