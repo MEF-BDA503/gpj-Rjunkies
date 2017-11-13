@@ -1,3 +1,13 @@
+## Week 5  (Nov 13)
+
+We've decided to add new datasets to our project. They will help answering various questions.
+
++ Open Flights - Airport Database (Over 10.000 airport) [Link](https://openflights.org/data.html#airport)
++ Open Flights - Airline Database (5.888 airlines) [Link](https://openflights.org/data.html#airline)
++ Open Flights - Route Database (59.036 routes between 3.209 airports on 531 airlines) [Link](https://openflights.org/data.html#route)
++ Wikipedia - List of busiest airports by passenger traffic [Link](http://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9idXNpZXN0X2FpcnBvcnRzX2J5X3Bhc3Nlbmdlcl90cmFmZmlj)
++ Wikipedia - List of busiest airports by passenger traffic (2000–2009) [Link](http://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9idXNpZXN0X2FpcnBvcnRzX2J5X3Bhc3Nlbmdlcl90cmFmZmljXygyMDAwJUUyJTgwJTkzMjAwOSk)
+
 ## Week 4  (Nov 7)
 
 OSYM Data is updated to v2. With new data, We see that General_quota type is changed from integer to character. 
