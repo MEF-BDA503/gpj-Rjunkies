@@ -1,3 +1,30 @@
+## Week 5  (Nov 20)
+
+Reviewing Group Name: Rjunkies
+Reviewed Group Name: NYC
+
+Project Description:
+Find the bus lines with the highest and lowest deviation from the regular schedule in New York City
+
+Dataset:
+Dataset is from the NYC MTA buses data stream service. 
+Dataset contain 24 for variable;In roughly 10 minute increments the bus location, route, bus stop and more is included in each row. 
+Data for the entire month of June 2017 is included.
+
+Appropriateness:
+Dataset is completely appropriate with project aim.
+Dataset includes expected and scheduled arrival times of buses.
+Also dataset is fairly large, reproducible and not confidental.
+
+Proposed Project Flow:
+They are not proposed project flow yet.
+
+Analysis Suggestion:
+We suggest that;
+1. Calculating correlation with deviation from the regular schedule and distance from stop
+2. Is deviation is effected by vehicle type (we suppose that Vehicle ref reflect vehicle type)
+3. Are density of lines predictable; if yes; Do deviation is correlated with lines and line density
+<br><br>
 ## Week 5  (Nov 13)
 
 We've decided to add new datasets to our project. They will help answering various questions.

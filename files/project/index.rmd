@@ -1,0 +1,45 @@
+---
+title: "R_Junkies Group Project"
+output:
+  html_document:
+    toc: true
+    theme: cosmo
+    highlight: haddock
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+This project, by **R_Junkies**, is about airplane crashes, in addition to airports, airlines and flight routes. The project is prepared specifically for BDA 503, 2017, MEF University; course given by [Berk Orbay](http://berkorbay.me/).
+
+## About Group Members
+
+We call ourselves: **R_Junkies**. It represents our humble interest in Data Science. It's a life-style.
+
+Group members are below (Ladies first):
+
++ [Yağmur Ulutürk Tekten](https://tr.linkedin.com/in/yagmuruluturk)
++ [Cem Gürkan](https://tr.linkedin.com/in/cgurkan)
++ [Rezan Azizoğlu](https://tr.linkedin.com/in/umut-rezan-azizoglu-b6683146)
++ [Semih Tekten](https://tr.linkedin.com/in/semihtekten)
+
+## About R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+# Preprocessing Data
+
+Here is the list of datasets and sources we will be using in this project:
+
++ Airplane Crashes Since 1908 - Kaggle [Link](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908)
++ Open Flights - Airport Database (Over 10.000 airport) [Link](https://openflights.org/data.html#airport)
++ Open Flights - Airline Database (5.888 airlines) [Link](https://openflights.org/data.html#airline)
++ Open Flights - Route Database (59.036 routes between 3.209 airports on 531 airlines) [Link](https://openflights.org/data.html#route)
++ Wikipedia - List of busiest airports by passenger traffic [Link](http://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9idXNpZXN0X2FpcnBvcnRzX2J5X3Bhc3Nlbmdlcl90cmFmZmlj)
++ Wikipedia - List of busiest airports by passenger traffic (2000–2009) [Link](http://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9idXNpZXN0X2FpcnBvcnRzX2J5X3Bhc3Nlbmdlcl90cmFmZmljXygyMDAwJUUyJTgwJTkzMjAwOSk)
