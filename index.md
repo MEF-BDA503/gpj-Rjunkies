@@ -25,8 +25,6 @@ We suggest that;
 2. Is deviation is effected by vehicle type (we suppose that Vehicle ref reflect vehicle type)
 3. Are density of lines predictable; if yes; Do deviation is correlated with lines and line density
 
-<br><br>
-
 ## Week 5  (Nov 13)
 
 We've decided to add new datasets to our project. They will help answering various questions.
