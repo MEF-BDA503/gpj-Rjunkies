@@ -1,3 +1,12 @@
+# Group Project
+
+You can find the latest version of our group project below:
+[**R_Junkies Group Project**](project/index.html)
+<br>
+
+***
+
+<br>
 ## Week 5  (Nov 20)
 
 Reviewing Group Name: Rjunkies
