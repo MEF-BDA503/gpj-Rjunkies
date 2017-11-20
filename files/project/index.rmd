@@ -43,3 +43,46 @@ Here is the list of datasets and sources we will be using in this project:
 + Open Flights - Route Database (59.036 routes between 3.209 airports on 531 airlines) [Link](https://openflights.org/data.html#route)
 + Wikipedia - List of busiest airports by passenger traffic [Link](http://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9idXNpZXN0X2FpcnBvcnRzX2J5X3Bhc3Nlbmdlcl90cmFmZmlj)
 + Wikipedia - List of busiest airports by passenger traffic (2000–2009) [Link](http://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9idXNpZXN0X2FpcnBvcnRzX2J5X3Bhc3Nlbmdlcl90cmFmZmljXygyMDAwJUUyJTgwJTkzMjAwOSk)
+
+## Airplane Crashes
+
+```{r include=TRUE}
+
+apc_raw <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/Airplane_Crashes_and_Fatalities_Since_1908.csv", header=TRUE, sep=",")
+
+head(apc_raw,5)
+
+```
+
+## Airports
+
+```{r include=TRUE}
+
+airports_raw = read.table("https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/airports.dat", fileEncoding = "UTF-8",header = FALSE,sep = ",")
+
+head(airports_raw,5)
+  
+```
+
+
+## Airlines
+
+```{r include=TRUE}
+
+airlines_raw = read.table("https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/airlines.dat", fileEncoding = "UTF-8",header = FALSE,sep = ",")
+
+
+head(airlines_raw,5)
+  
+```
+
+## Routes
+
+```{r include=TRUE}
+
+routes_raw = read.table("https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/routes.dat", fileEncoding = "UTF-8",header = FALSE,sep = ",")
+
+
+head(routes_raw,5)
+  
+```
