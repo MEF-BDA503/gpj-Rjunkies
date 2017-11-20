@@ -1,7 +1,7 @@
 # Group Project
 
-You can find the latest version of our group project below:
-[**R_Junkies Group Project**](project/index.html)
+You can find the latest version of our group project below:<br>
+[**R_Junkies Group Project**](files/project/index.html)
 <br>
 
 ***
