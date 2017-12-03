@@ -267,13 +267,69 @@ ggplot(dataSurvival, aes(y=SurvivalRate, x=Year)) +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0, size=8))
 ``` 
 
+
+## Possible Cause of Crash - Word Cloud
+
+For each accident, there is an explanation of the accident. By looking this summary information, we try to visuailize of summary information as a word cloud.
+
+```{r message=FALSE}
+library("tm") # for text mining
+library("SnowballC") # for text stemming
+library("wordcloud") # word-cloud generator 
+library("RColorBrewer") # color palettes
+
+text <- apc_clean$Summary
+
+docs <- Corpus(VectorSource(text))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs <- tm_map(docs, toSpace, "/")
+docs <- tm_map(docs, toSpace, "@")
+docs <- tm_map(docs, toSpace, "\\|")
+
+docs <- tm_map(docs, PlainTextDocument)
+
+# Convert the text to lower case
+docs <- tm_map(docs, content_transformer(tolower))
+# Remove numbers
+docs <- tm_map(docs, removeNumbers)
+# Remove english common stopwords
+docs <- tm_map(docs, removeWords, stopwords("english"))
+# Remove punctuations
+docs <- tm_map(docs, removePunctuation)
+# Eliminate extra white spaces
+docs <- tm_map(docs, stripWhitespace)
+
+# Text stemming
+docs <- tm_map(docs, stemDocument)
+
+# Remove possible words that high frequency in text that no meaning for crash reason
+# (After first try in word cloud, we realize that these words are the most frequent one)
+docs <- tm_map(docs, removeWords, c("aircraft", "plane","flight", "crash")) 
+
+dtm <- TermDocumentMatrix(docs)
+##Remove sparse terms
+removeSparseTerms(dtm, 0.95)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+#head(d, 10)
+
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+
+```
+
 # References {#references}
 ## Data Preprocessing & Cleaning {#ref_preprocessing}
 
 + [Google](http://www.google.com)
 + [StackOverFlow](http://www.stackoverflow.com)
 + [Kaggle Kernel: Military VS Civilian Crashes](https://www.kaggle.com/adhok93/military-vs-civilian-crashes/code)
-+ [Kaggle Kernel: Data Cleaning via Airplane Crashes](https://www.kaggle.com/danielviray/data-cleaning-via-airplane-crashes)
++ [Kaggle Kernel: Data Cleaning via Airplane Crashes](https://www.kaggle.com/danielviray/data-cleaning-via-airplane-crashes)  
++ [Word Cloud Fundamentals](http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know)
 
 We understood how to differentiate whether an operator is Military institution or a Civilian operator from adhok93's kernel.
 <br><br>
