@@ -6,7 +6,7 @@ output:
     theme: cosmo
     highlight: haddock
     toc_float:
-      collapsed: false
+      collapsed: true
       smooth_scroll: false
 ---
 
@@ -14,7 +14,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Introduction
+# Introduction {#intro}
 
 This project, by **R_Junkies**, is about airplane crashes, in addition to airports, airlines and flight routes. The project is prepared specifically for BDA 503, 2017, MEF University; course given by [Berk Orbay](http://berkorbay.me/).
 
@@ -33,16 +33,11 @@ Group members are below (Ladies first):
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-# Preprocessing Data
+# Gathering Data {#gather}
 
 Here is the list of datasets and sources we will be using in this project:
 
 + Airplane Crashes Since 1908 - Kaggle [Link](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908)
-+ Open Flights - Airport Database (Over 10.000 airport) [Link](https://openflights.org/data.html#airport)
-+ Open Flights - Airline Database (5.888 airlines) [Link](https://openflights.org/data.html#airline)
-+ Open Flights - Route Database (59.036 routes between 3.209 airports on 531 airlines) [Link](https://openflights.org/data.html#route)
-+ Wikipedia - List of busiest airports by passenger traffic [Link](http://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9idXNpZXN0X2FpcnBvcnRzX2J5X3Bhc3Nlbmdlcl90cmFmZmlj)
-+ Wikipedia - List of busiest airports by passenger traffic (2000–2009) [Link](http://www.0wikipedia.org/index.php?q=aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGlzdF9vZl9idXNpZXN0X2FpcnBvcnRzX2J5X3Bhc3Nlbmdlcl90cmFmZmljXygyMDAwJUUyJTgwJTkzMjAwOSk)
 
 ## Airplane Crashes
 
@@ -50,39 +45,165 @@ Here is the list of datasets and sources we will be using in this project:
 
 apc_raw <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/Airplane_Crashes_and_Fatalities_Since_1908.csv", header=TRUE, sep=",")
 
-head(apc_raw,5)
-
 ```
 
-## Airports
+<br>
+
+# Data Preprocessing & Cleaning
+
+Loading necessary libraries
 
 ```{r include=TRUE}
 
-airports_raw = read.table("https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/airports.dat", fileEncoding = "UTF-8",header = FALSE,sep = ",")
+library(stringr) # For string manipulation
 
-head(airports_raw,5)
-  
 ```
 
-
-## Airlines
+We first create a new data frame called "apc_clean" which we will manipulate for future analysis.
 
 ```{r include=TRUE}
 
-airlines_raw = read.table("https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/airlines.dat", fileEncoding = "UTF-8",header = FALSE,sep = ",")
+# New data frame
+apc_clean <- apc_raw
 
+# Dimensions
+dim(apc_clean)
 
-head(airlines_raw,5)
-  
+# Get an idea of apc_clean columns
+str(apc_clean)
+
 ```
 
-## Routes
+There are columns which we can't use for any analysis. These are: "**Flight..**", "**Registration**", "**cn.In**", "**Ground**"
 
 ```{r include=TRUE}
 
-routes_raw = read.table("https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/routes.dat", fileEncoding = "UTF-8",header = FALSE,sep = ",")
+# Delete "FLight.." column
+apc_clean$Flight.. <- NULL
 
+# Delete "Registration" column
+apc_clean$Registration <- NULL
 
-head(routes_raw,5)
-  
+# Delete "cn.In" column
+apc_clean$cn.In <- NULL
+
+# Delete "Ground" column
+apc_clean$Ground <- NULL
+
 ```
+
+Beautiful. We dropped unnecessary columns.<br>
+Now it's time to reshape time-related columns.
+
+```{r include=TRUE}
+
+# Change date format
+apc_clean$Date <- as.Date(apc_clean$Date, format = "%m/%d/%Y")
+typeof(apc_clean$Date)
+
+# Change & clean time format
+apc_clean$Time <- gsub('c:', '', apc_clean$Time)
+apc_clean$Time <- gsub('c', '', apc_clean$Time)
+apc_clean$Time <- factor(as.character(substr(apc_clean$Time, 1, 2)))
+typeof(apc_clean$Time)
+
+# New columns for month & year
+apc_clean$Year = factor(format(as.Date(apc_clean$Date, format="%Y/%m/%d"),"%Y"))
+apc_clean$Month = factor(format(as.Date(apc_clean$Date, format="%Y/%m/%d"),"%m"))
+
+head(apc_clean$Year)
+head(apc_clean$Month)
+
+```
+
+We can collect state & city information from "Location" column.
+
+```{r include=TRUE}
+
+# We add new "State" & "City" column
+apc_clean$State <- sapply(apc_clean$Location, as.character)
+apc_clean$City <- sapply(apc_clean$Location, as.character)
+
+# Seperate State & City
+apc_clean$State <- str_trim(gsub(".*,", "", apc_clean$State))
+apc_clean$City <- str_trim(gsub(",.*", "", apc_clean$City))
+
+head(apc_clean$State)
+head(apc_clean$City)
+
+# Delete unnecessary "Location" column
+apc_clean$Location <- NULL
+
+```
+
+Very nice. Now we are going to label flights as "Civilian" or "Military". If "IsMilitary" equals to 1, that means that flight operator is a Military institution, otherwise it is a Civilian flight.
+
+```{r include=TRUE}
+
+military_keywords <- c("Military", "Army", "Navy")
+apc_clean$IsMilitary <- ifelse(grepl(paste(military_keywords, collapse = "|"), apc_clean$Operator),1,0)
+
+# Number of Military Flights
+sum(apc_clean$IsMilitary)
+
+```
+
+Wonderful. Let's find out how many passengers survived for each crash.
+
+```{r include=TRUE}
+
+apc_clean$Survived <- apc_clean$Aboard - apc_clean$Fatalities
+head(apc_clean$Survived)
+
+```
+
+We can determine Source, Destination and number of stops from "Route" column.
+
+```{r include=TRUE}
+
+apc_clean$Source <- gsub(" -.*", "", apc_clean$Route)
+apc_clean$Destination <- gsub(".* -", "", apc_clean$Route)
+apc_clean$Stops <- str_count(apc_clean$Route,"-")-1
+
+# Number of flights with no Stops
+length(which(apc_clean$Stops==0))
+
+# Number of flights with no Route information
+length(which(apc_clean$Stops<0))
+
+# Number of flights with Stops
+length(which(apc_clean$Stops>0))
+
+```
+
+Lastly, we reordered the columns in apc_clean data frame.
+
+```{r}
+
+apc_clean <- apc_clean[,c(1,2,9,10,11,12,3,13,4,15,16,17,5,6,7,14,8)]
+
+# Latest structure of apc_clean
+str(apc_clean)
+
+```
+
+
+You can find references for preprocessing from [here](#ref_preprocessing).
+<br><br>
+
+# Exploratory Analytics of APC {#eda}
+
+BURADAN SONRA TEK TEK TEMIZLEDIGIMIZ VERI SETINDEKI VARIABLELARI ACIKLAYACAGIZ.
+<br><br>
+
+# References {#references}
+## Data Preprocessing & Cleaning {#ref_preprocessing}
+
++ [Google](http://www.google.com)
++ [StackOverFlow](http://www.stackoverflow.com)
++ [Kaggle Kernel: Military VS Civilian Crashes](https://www.kaggle.com/adhok93/military-vs-civilian-crashes/code)
++ [Kaggle Kernel: Data Cleaning via Airplane Crashes](https://www.kaggle.com/danielviray/data-cleaning-via-airplane-crashes)
+
+We understood how to differentiate whether an operator is Military institution or a Civilian operator from adhok93's kernel.
+<br><br>
+We got a lot of help from danielviray's kernel in order to accomplish data preprocessing, but we used a different approach and generated our own columns.
