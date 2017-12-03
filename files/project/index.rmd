@@ -234,12 +234,38 @@ normalizer <- max(dep_acc_fat$Accident)/max(dep_acc_fat$Departure)
 ggplot(dep_acc_fat, aes(y=Departure, x=year)) +  
   geom_col(aes(y = Accident / normalizer)) + 
   geom_line(size=1.5, alpha=1) +
-  scale_y_continuous(sec.axis = sec_axis(trans= ~.*normalizer,
-                                         name = 'Accident')) +
-  theme_bw()
+  scale_y_continuous(sec.axis = sec_axis(trans= ~.*normalizer, name = 'Accident')) +
+  theme_bw() + 
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0, size=8))
 
 
 ```
+
+## What's the progress of survival rate?
+
+We observe that Survival rate start from approximately 0% in the early 1900's to 45%.  Due to war and no safety concern in in 1910s, survival rate almost 0. As seen in graph, at the World War II, survival rate decrease to 5%.
+
+```{r}
+# Survival Rate
+dataSurvival <- apc_clean %>% 
+  filter(as.numeric(as.character(Year)) >= 1900 & Aboard > 0) %>%
+  group_by(Year) %>%
+  summarize(TotalFatalities=sum(Fatalities), 
+            TotalAboard=sum(Aboard),
+            SurvivalRate=round(100*(TotalAboard-TotalFatalities)/TotalAboard,2),
+            Survival = (TotalAboard-TotalFatalities),
+            TotalAccident = n())
+
+# Normalizer for dual-y axis
+n <- max(dataSurvival$TotalAccident) /max(dataSurvival$SurvivalRate)
+
+ggplot(dataSurvival, aes(y=SurvivalRate, x=Year)) +  
+  geom_col(aes(y=TotalAccident/n)) +
+  geom_line(aes(group = 1), size=1.3, alpha=1) +
+  scale_y_continuous(sec.axis = sec_axis(trans= ~.*n, name = 'Total Accidents')) + 
+  theme_bw() + 
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0, size=8))
+``` 
 
 # References {#references}
 ## Data Preprocessing & Cleaning {#ref_preprocessing}
