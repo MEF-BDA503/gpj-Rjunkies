@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction {#intro}
 
-This project, by **R_Junkies**, is about airplane crashes, in addition to airports, airlines and flight routes. The project is prepared specifically for BDA 503, 2017, MEF University; course given by [Berk Orbay](http://berkorbay.me/).
+This project, by **R_Junkies**, is about past airplane crashes, from 1908 to 2009. The project is prepared specifically for BDA 503, 2017, MEF University; course given by [Berk Orbay](http://berkorbay.me/).
 
 ## About Group Members
 
@@ -37,7 +37,11 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 Here is the list of datasets and sources we will be using in this project:
 
+<<<<<<< Updated upstream
 + Airplane Crashes Since 1908 - Kaggle [Link](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908)  
+=======
++ Airplane Crashes Since 1908 - Kaggle [Link](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908)
+>>>>>>> Stashed changes
 + Air transport, passengers carried (1970-2016) - World Bank [Link](http://databank.worldbank.org/data/reports.aspx?source=2&series=IS.AIR.PSGR&country=)  
 + Air transport, registered carrier departures worldwide (1970-2016) - World Bank [Link](http://databank.worldbank.org/data/reports.aspx?source=2&series=IS.AIR.DPRT&country=) 
 
@@ -56,12 +60,30 @@ air_dprt <- read.csv(file="C:/_Documents/BDA_MEF/BDA503/GrpProject/IS.AIR.DPRT_m
 
 ```
 
+## Passengers Carried
+
+```{r include=TRUE}
+
+air_psgr <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/is_air_psgr_melt.csv", header=TRUE, sep=",", quote="\"", na.strings="NA")
+
+```
+
+
+## Registered Carrier Departures Worldwide
+
+```{r include=TRUE}
+
+air_dprt <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/is_air_dprt_melt.csv",header=TRUE, sep=",", quote="\"", na.strings="NA")
+
+```
+
 <br>
 
 # Data Preprocessing & Cleaning
 
-Loading necessary libraries
+Here are the necessary libraries.
 
+<<<<<<< Updated upstream
 ```{r include=TRUE, message=FALSE}
 
 library(stringr) # For string manipulation
@@ -70,6 +92,21 @@ library(ggplot2)
 library(ggthemes)
 library(grid)
 library(scales)
+=======
+```{r echo=TRUE, warning=FALSE, message=FALSE}
+
+library(stringr) # For string manipulation
+library(tidyverse)
+library(ggthemes)
+library(grid)
+library(gridExtra)
+library(scales)
+
+library(tm) # for text mining
+library(SnowballC) # for text stemming
+library(wordcloud) # word-cloud generator 
+library(RColorBrewer) # color palettes
+>>>>>>> Stashed changes
 
 ```
 
@@ -192,7 +229,7 @@ length(which(apc_clean$Stops>0))
 
 Lastly, we reordered the columns in apc_clean data frame.
 
-```{r}
+```{r include=TRUE}
 
 apc_clean <- apc_clean[,c(1,2,9,10,11,12,3,13,4,15,16,17,5,6,7,14,8)]
 
@@ -207,17 +244,154 @@ You can find references for preprocessing from [here](#ref_preprocessing).
 
 # Exploratory Analytics of APC {#eda}
 
+<<<<<<< Updated upstream
 
 ## Comparing # of accidents vs # of passangers
 
 ```{r}
 # Finding total departures in Million
+=======
+## Explaining the Dataset & Variables
+
+**Dataset**:
+Airplane crashes from 1908 to 2009. Contains 17 variables, with 5.268 observations.
+
+Here are the variables in our Airplane Crashes dataset and their explanations:
+
++ **Date**: The date of airplane crash.
++ **Time**: The time of airplane crash in hh format.
++ **Year**: The year of airplane crash.
++ **Month**: The month of airplane crash.
++ **State**: This field shows the country in which airplane crash happened.
++ **City**: This field shows the city in which airplane crash occured.
++ **Operator**: This field contains the airline information.
++ **IsMilitary**: This field shows whether an operator is a military institution or civilian. It conveys binary results (1=Military, 0=Civilian).
++ **Route**: This field contains the  departure, arrival and transfer location of the flight. There are both direct and connecting flights.
++ **Source**: This field shows the city where the airplane took-off.
++ **Destination**: This field shows the destination city.
++ **Stops**: This field demonstrates the number of transfer cities for connecting flights.
++ **Type**: This field contains the information of the airplane type.
++ **Aboard**: This field shows the number of passengers at the time of departure.
++ **Fatalities**: This field shows the number of passengers died after airplane crash.
++ **Survived**: This field shows the number of passengers survived after airplane crash.
++ **Summary**: This field contains information about the airplane crash and possible reasons.
+
+## Objectives
+
++ Understanding statistics and characteristics of past airplane crashes
+
++ Visualizing results of exploratory analysis
+
++ Demonstrating geolocations of airplane crashes on a dynamic map (Using Shiny)
+
++ Forecasting least risky flights for our future travel plans :)
+
++ Developing and demonstrating R, RMarkdown & Shiny skills of **R_Junkies**
+
+## Questions
+
+We studied most of the kernels on [Kaggle](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908/kernels). Majority of the them are not very sophisticated and don't even go beyond basic descriptive analytics. We hope that at the end of our research, we can share our findings on Kaggle. :) We showed the questions with an asterix (\*) that we got inspired from kernels. Questions without an asterix are developed specifically for this analysis by **R_Junkies**.
+<br><br>
+
+todo: QUESTIONS WILL BE HERE.
+
+## EDA
+
+### Top 10 Airplane Types & Crashes
+
+```{r include=TRUE}
+
+top_ten_plane <- apc_clean %>%
+                  group_by(Type) %>%
+                  summarise(Freq = n()) %>%
+                  arrange(desc(Freq)) %>% 
+                  top_n(10)
+
+top_ten_plane$Type <- substr(top_ten_plane$Type,1,19)
+
+top_ten_plane
+
+
+```
+
+
+```{r include=TRUE}
+top_ten_mil_plane <- apc_clean %>%
+                  filter(IsMilitary==1) %>%
+                  group_by(Type) %>%
+                  summarise(Freq = n()) %>%
+                  arrange(desc(Freq)) %>% 
+                  top_n(10)
+
+# Slicing long strings
+top_ten_mil_plane$Type <- substr(top_ten_mil_plane$Type,1,19)
+
+top_ten_mil_plane
+
+top_ten_civ_plane <- apc_clean %>%
+                  filter(IsMilitary==0) %>%
+                  group_by(Type) %>%
+                  summarise(Freq = n()) %>%
+                  arrange(desc(Freq)) %>% 
+                  top_n(10)
+
+# Slicing long strings
+top_ten_civ_plane$Type <- substr(top_ten_civ_plane$Type,1,19)
+
+top_ten_civ_plane
+
+
+
+```
+
+
+```{r include=TRUE}
+
+ggplot(top_ten_plane, aes(x=reorder(Type, -Freq), y=Freq)) +
+  geom_bar(stat = "identity", fill = "#2780E3") +
+  labs(title="Top 10 Airplanes by Crash Count",x="Airplanes",y="Frequency",fill="") +
+  theme (axis.text.x=element_text (angle=60,vjust=1, hjust=1))
+
+
+
+```
+
+```{r include=TRUE}
+
+top_ten_mil_plane_plot <- ggplot(top_ten_mil_plane, aes(x=reorder(Type, -Freq), y=Freq)) +
+                            geom_bar(stat = "identity", fill = "#2780E3") +
+                            labs(title="Top 10 Military Airplanes by Crash Count",x="Airplanes",y="Frequency",fill="") +
+                            theme (axis.text.x=element_text (angle=60,vjust=1, hjust=1)) +
+                            theme(plot.title = element_text(size=11),
+                                  axis.text=element_text(size=8))
+
+
+top_ten_civ_plane_plot <- ggplot(top_ten_civ_plane, aes(x=reorder(Type, -Freq), y=Freq)) +
+                            geom_bar(stat = "identity", fill = "#2780E3") +
+                            labs(title="Top 10 Civilian Airplanes by Crash Count",x="Airplanes",y="Frequency",fill="") +
+                            theme (axis.text.x=element_text (angle=60,vjust=1, hjust=1)) +
+                            theme(plot.title = element_text(size=11),
+                                  axis.text=element_text(size=8))
+
+grid.arrange(top_ten_mil_plane_plot, top_ten_civ_plane_plot, ncol=2)
+
+```
+
+
+### Comparing # of Accidents & # of Departures
+
+```{r include=TRUE}
+
+# Total departures in Million
+
+>>>>>>> Stashed changes
 total_dprt <- 
   air_dprt %>%
   filter(Time >= 1970 & Time <= 2009) %>%
   mutate(dep_val = ifelse(is.na(Value), 0, Value)) %>% 
   group_by(Time) %>% summarize(total_dep=sum(dep_val)/1000000)
 
+<<<<<<< Updated upstream
 # Finding # of Accidents and Fatalities
 Acc_fat_data <- apc_clean %>% filter(as.numeric(as.character(Year)) >= 1970) %>%  group_by(Year)%>% summarise(n=sum(ifelse(is.na(Aboard), 0, Aboard)),f=sum(ifelse(is.na(Fatalities), 0, Fatalities)))
 
@@ -321,6 +495,209 @@ wordcloud(words = d$word, freq = d$freq, min.freq = 1,
           colors=brewer.pal(8, "Dark2"))
 
 ```
+=======
+# # of Accidents and Fatalities
+
+Acc_fat_data <- apc_clean %>% filter(as.numeric(as.character(Year)) >= 1970) %>%  group_by(Year)%>% summarise(n=sum(ifelse(is.na(Aboard), 0, Aboard)),f=sum(ifelse(is.na(Fatalities), 0, Fatalities)))
+
+# Combining Departures and Accident-Fatality Data
+
+dep_acc_fat <- data.frame(year=total_dprt$Time,
+                  Departure = total_dprt$total_dep,
+                  Accident = Acc_fat_data$n,
+                 Fatality = Acc_fat_data$f,
+                 Rate = Acc_fat_data$n/total_dprt$total_dep)
+
+# Normalizer for plot
+
+normalizer <- max(dep_acc_fat$Accident)/max(dep_acc_fat$Departure)
+
+ggplot(dep_acc_fat, aes(y=Departure, x=year)) +  
+  geom_col(aes(y = Accident / normalizer), fill = "#2780E3") + 
+  geom_line(size=1.5, alpha=1, colour = "#7a1c1c") +
+  scale_y_continuous(sec.axis = sec_axis(trans= ~.*normalizer, name = 'Accident')) +
+  theme(axis.text.x=element_text(angle=60, vjust=1, hjust=1, size=8))
+
+```
+
+
+### Top Civil Operators' Crashes & Fatalities Over Years
+
+```{r include=TRUE}
+
+top_six_civ_op_crash <- apc_clean %>%
+                        filter(IsMilitary==0) %>%
+                        group_by(Operator) %>%
+                        summarise(SumCrashes= n()) %>%
+                        arrange(desc(SumCrashes))  %>%
+                        top_n(6)
+
+top_six_civ_op_fat <- apc_clean %>%
+                        filter(IsMilitary==0) %>%
+                        group_by(Operator) %>%
+                        summarise(SumFats= sum(Fatalities)) %>%
+                        arrange(desc(SumFats))  %>%
+                        top_n(6)
+
+top_six_civ_op_crash_oy <- apc_clean %>%
+                            filter(Operator %in% top_six_civ_op_crash$Operator)  %>%
+                            group_by(Operator, Year) %>%
+                            summarise(SumFatalities= sum(Fatalities)) %>%
+                            arrange(desc(Year), desc(SumFatalities))
+
+top_six_civ_op_fat_oy <- apc_clean %>%
+                            filter(Operator %in% top_six_civ_op_fat$Operator)  %>%
+                            group_by(Operator, Year) %>%
+                            summarise(SumFatalities= sum(Fatalities)) %>%
+                            arrange(desc(Year), desc(SumFatalities))
+
+top_six_civ_op_crash 
+top_six_civ_op_fat
+top_six_civ_op_crash_oy
+top_six_civ_op_fat_oy
+
+```
+
+```{r include=TRUE}
+
+ggplot(top_six_civ_op_crash_oy, aes(x=Year)) +
+  geom_line(aes(y=SumFatalities, group = top_six_civ_op_crash_oy$Operator, colour=top_six_civ_op_crash_oy$Operator), size=0.5, alpha=1) +
+  ggtitle("Fatalities of Top 6 Operators with Most Crashes Over Years") +
+  scale_x_discrete(breaks = levels(top_six_civ_op_crash_oy$Year)[c(T, rep(F, 3))]) +
+  theme (axis.text.x=element_text (angle=60,vjust=1, hjust=1)) +
+  theme(plot.title = element_text(size=11),
+         axis.text=element_text(size=8),
+        legend.position="bottom") +
+  labs(x = "Years", y = "Fatalities", colour = "Operators")
+
+ggplot(top_six_civ_op_fat_oy, aes(x=Year)) +
+  geom_line(aes(y=SumFatalities, group = top_six_civ_op_fat_oy$Operator, colour=top_six_civ_op_fat_oy$Operator), size=0.5, alpha=1) +
+  ggtitle("Fatalities of Top 6 Operators with Most Fatalities Over Years") +
+  scale_x_discrete(breaks = levels(top_six_civ_op_fat_oy$Year)[c(T, rep(F, 3))]) +
+  theme (axis.text.x=element_text (angle=60,vjust=1, hjust=1)) +
+  theme(plot.title = element_text(size=11),
+         axis.text=element_text(size=8),
+        legend.position="bottom") +
+  labs(x = "Years", y = "Fatalities", colour = "Operators")
+
+```
+
+### Has Survival Rate Increased Over Time?
+ 
+```{r include=TRUE, warning=FALSE}
+
+# Survival Rate
+dataSurvival <- apc_clean %>% 
+   filter(as.numeric(as.character(Year)) >= 1900 & Aboard > 0) %>%
+   group_by(Year) %>%
+   summarize(TotalFatalities=sum(Fatalities), 
+             TotalAboard=sum(Aboard),
+             SurvivalRate=round(100*(TotalAboard-TotalFatalities)/TotalAboard,2),
+             Survival = (TotalAboard-TotalFatalities),
+             TotalAccident = n())
+ 
+# Normalizer for dual-y axis
+n <- max(dataSurvival$TotalAccident) /max(dataSurvival$SurvivalRate)
+ 
+ggplot(dataSurvival, aes(y=SurvivalRate, x=Year)) +  
+   geom_col(aes(y=TotalAccident/n), fill = "#2780E3") +
+   geom_line(aes(group = 1), size=0.7, alpha=1, colour = "#7a1c1c") +
+   geom_smooth(aes(group = 1), colour = "black") +
+   scale_y_continuous(sec.axis = sec_axis(trans= ~.*n, name = 'Total Accidents')) + 
+   scale_x_discrete(breaks = levels(dataSurvival$Year)[c(T, rep(F, 3))]) +
+   
+   theme(axis.text.x=element_text(angle=60, vjust=1, hjust=1, size=8))
+   
+   
+```
+ 
+We observed that "Survival Rate" was very low in early 1900's and increased over time. As seen in graph, at World War II, survival rate decreases below 10%. After 2000s, it increases to 50% on average.
+
+
+
+### Possible Causes of Crashes - Word Cloud
+
+For each accident, there is an explanation in "Summary" column. By looking at this summary information, we tried to visuailize a word cloud.
+ 
+```{r include=TRUE, warning=FALSE}
+ 
+ text <- apc_clean$Summary
+ 
+ docs <- Corpus(VectorSource(text))
+ 
+ toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+ docs <- tm_map(docs, toSpace, "/")
+ docs <- tm_map(docs, toSpace, "@")
+ docs <- tm_map(docs, toSpace, "\\|")
+ 
+ docs <- tm_map(docs, PlainTextDocument)
+ 
+ # Convert text to lower case
+ docs <- tm_map(docs, content_transformer(tolower))
+ 
+ # Remove numbers
+ docs <- tm_map(docs, removeNumbers)
+ 
+ # Remove english common stopwords
+ docs <- tm_map(docs, removeWords, stopwords("english"))
+ 
+ # Remove punctuations
+ docs <- tm_map(docs, removePunctuation)
+ 
+ # Eliminate extra white spaces
+ docs <- tm_map(docs, stripWhitespace)
+ 
+ # Text stemming
+ docs <- tm_map(docs, stemDocument)
+ 
+ # Remove possible words that high frequency in text that no meaning for crash reason
+ # (After first try in word cloud, we realize that these words are the most frequent one)
+ docs <- tm_map(docs, removeWords, c("aircraft", "plane","flight", "crash")) 
+ 
+ dtm <- TermDocumentMatrix(docs)
+ ##Remove sparse terms
+ removeSparseTerms(dtm, 0.95)
+ m <- as.matrix(dtm)
+ v <- sort(rowSums(m),decreasing=TRUE)
+ d <- data.frame(word = names(v),freq=v)
+ #head(d, 10)
+ 
+ set.seed(1234)
+ wordcloud(words = d$word, freq = d$freq, min.freq = 1,
+           max.words=200, random.order=FALSE, rot.per=0.35, 
+           colors=brewer.pal(8, "Dark2"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+
+# Dynamic Map of Airplane Crashes
+todo: SHINY
+<br><br>
+
+# Forecasting & Machine Learning
+todo: PCA, Modelling etc.
+<br><br>
+
+# Conclusion
+
+todo: Findings & insights for future researches
+<br><br>
+
+<br><br>
+>>>>>>> Stashed changes
 
 # References {#references}
 ## Data Preprocessing & Cleaning {#ref_preprocessing}
@@ -334,3 +711,11 @@ wordcloud(words = d$word, freq = d$freq, min.freq = 1,
 We understood how to differentiate whether an operator is Military institution or a Civilian operator from adhok93's kernel.
 <br><br>
 We got a lot of help from danielviray's kernel in order to accomplish data preprocessing, but we used a different approach and generated our own columns.
+
+## EDA {#ref_eda}
+
++ [Word Cloud Fundamentals](http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know)
+
+
+
+
