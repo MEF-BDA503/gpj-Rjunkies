@@ -45,7 +45,7 @@ Here is the list of datasets and sources we will be using in this project:
 
 ```{r include=TRUE}
 
-apc_raw <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/Airplane_Crashes_and_Fatalities_Since_1908.csv", header=TRUE, sep=",")
+apc_raw <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/Airplane_Crashes_and_Fatalities_Since_1908_2017.csv", header=TRUE, sep=",")
 
 ```
 
@@ -70,7 +70,23 @@ air_dprt <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjun
 
 # Data Preprocessing & Cleaning
 
-Here are the necessary libraries.
+Here are the necessary libraries. We checked if necessary libraries are not installed properly.
+
+```{r echo=TRUE, warning=FALSE, message=FALSE}
+necessary_lib <- c("stringr","tidyverse","ggthemes","grid","gridExtra","scales","tm","SnowballC","wordcloud","RColorBrewer")
+
+# Lets check this necessary libraries against already installed packages.
+necessary_lib <- necessary_lib[!(necessary_lib %in% installed.packages())]
+
+if(length(necessary_lib)!=0){
+  install.packages(necessary_lib)
+}
+
+```
+
+Load necessary libraries
+
+
 
 ```{r echo=TRUE, warning=FALSE, message=FALSE}
 
@@ -357,21 +373,21 @@ grid.arrange(top_ten_mil_plane_plot, top_ten_civ_plane_plot, ncol=2)
 
 total_dprt <- 
   air_dprt %>%
-  filter(Time >= 1970 & Time <= 2009) %>%
+  filter(Time >= 1970 & Time <= 2016) %>%
   mutate(dep_val = ifelse(is.na(Value), 0, Value)) %>% 
   group_by(Time) %>% summarize(total_dep=sum(dep_val)/1000000)
 
 # # of Accidents and Fatalities
 
-Acc_fat_data <- apc_clean %>% filter(as.numeric(as.character(Year)) >= 1970) %>%  group_by(Year)%>% summarise(n=sum(ifelse(is.na(Aboard), 0, Aboard)),f=sum(ifelse(is.na(Fatalities), 0, Fatalities)))
+Acc_fat_data <- apc_clean %>% filter(as.numeric(as.character(Year)) >= 1970 & as.numeric(as.character(Year)) <= 2016) %>%  group_by(Year)%>% summarise(n=sum(ifelse(is.na(Aboard), 0, Aboard)),f=sum(ifelse(is.na(Fatalities), 0, Fatalities)))
 
 # Combining Departures and Accident-Fatality Data
 
 dep_acc_fat <- data.frame(year=total_dprt$Time,
-                  Departure = total_dprt$total_dep,
-                  Accident = Acc_fat_data$n,
-                 Fatality = Acc_fat_data$f,
-                 Rate = Acc_fat_data$n/total_dprt$total_dep)
+                Departure = total_dprt$total_dep,
+                Accident = Acc_fat_data$n,
+                Fatality = Acc_fat_data$f,
+                Rate = Acc_fat_data$n/total_dprt$total_dep)
 
 # Normalizer for plot
 
@@ -532,17 +548,6 @@ For each accident, there is an explanation in "Summary" column. By looking at th
            max.words=200, random.order=FALSE, rot.per=0.35, 
            colors=brewer.pal(8, "Dark2"))
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 
 
