@@ -41,11 +41,217 @@ Here is the list of datasets and sources we will be using in this project:
 + Air transport, passengers carried (1970-2016) - World Bank [Link](http://databank.worldbank.org/data/reports.aspx?source=2&series=IS.AIR.PSGR&country=)  
 + Air transport, registered carrier departures worldwide (1970-2016) - World Bank [Link](http://databank.worldbank.org/data/reports.aspx?source=2&series=IS.AIR.DPRT&country=) 
 
+Our dataset taken from Kaggle contains only data year from 1908 to 2009 (partialy). In order to analyze data more accurately, we crawl dataset from [http://www.planecrashinfo.com/](http://www.planecrashinfo.com/). With the following Pyhton code, we create a new file contains only data from 2009 to 2017.
+
+```{python}
+from bs4 import BeautifulSoup
+import re
+from urllib import request
+import datetime
+import csv
+
+# Request URL and return response as BeautifulSoup object
+def makeBeautifulSoupObject(url):
+    requestConn = request.urlopen(url)
+    responseHTML = requestConn.read()
+    requestConn.close()
+    soup = BeautifulSoup(responseHTML, "lxml")
+    soup.decode(eventual_encoding="UTF-8")
+    return soup
+
+def parseHTML(table_):
+    record = {}
+    table = BeautifulSoup(str(table_[0]), 'html.parser')
+
+    for tr in table.find_all("tr")[1:]:
+        tds = tr.find_all("td")
+        # encoding the 'value' string to utf-8 and removing any non-breaking space (HTML Character)
+        tmp_str = tds[1].string  # .string.encode('utf-8').replace("&nbsp;", "")
+        value = str(tmp_str)  # this is the value- In Column #2 of the HTML table
+        key = tds[0].string  # this is the key- In Column #1 of the HTML table
+        # print(tds[0])
+        if key == "Date:":
+            dat = str(value).replace(',', '')
+            date = datetime.datetime.strptime(dat, '%B %d %Y')
+            record["date"] = date
+        elif key == "Time:":
+            if not value == '?':
+                time = re.sub("[^0-9]", "", value)
+                record["time"] = time[0:2] + ":" + time[2:4]
+            else:
+                record["time"] = ''
+        elif key == "Location:":
+            if not value == '?':
+                record["loc"] = str(value)
+            else:
+                record["loc"] = ''
+        elif key == "Operator:":
+            if not value == '?':
+                record["op"] = str(value)
+            else:
+                record["op"] = ''
+        elif key == "Flight #:":
+            if not value == '?':
+                record["flight"] = str(value)
+            else:
+                record["flight"] = ''
+        elif key == "Route:":
+            if not value == '?':
+                record["route"] = str(value)
+            else:
+                record["route"] = ''
+        elif key == "Registration:":
+            if not value == '?':
+                record["reg"] = str(value).encode("utf-8")
+            else:
+                record["reg"] = ''
+        elif key == "cn / ln:":
+            if not value == '?':
+                record["cnln"] = str(value)
+            else:
+                record["cnln"] = ''
+        elif key == "Aboard:":
+            if not value == '?':
+                s = ' '.join(value.split())
+                aboard_ = s.replace('(', '').replace(')', '').split(' ')
+                if aboard_[0] != '?':
+                    record["aboard_total"] = aboard_[0]
+                else:
+                    record["aboard_total"] = 'NULL'
+
+                passengers = aboard_[1].replace("passengers:", "")
+                if passengers != '?':
+                    record["aboard_passengers"] = passengers
+                else:
+                    record["aboard_passengers"] = 'NULL'
+
+                crew = aboard_[2].replace("crew:", "")
+                if crew != '?':
+                    record["aboard_crew"] = crew
+                else:
+                    record["aboard_crew"] = 'NULL'
+            else:
+                record["aboard_total"] = 'NULL'
+                record["aboard_passengers"] = 'NULL'
+                record["aboard_crew"] = 'NULL'
+        elif key == "Fatalities:":
+            if not value == '?':
+                s = ' '.join(value.split())
+                fatalities_ = s.replace('(', '').replace(')', '').split(' ')
+
+                if fatalities_[0] != '?':
+                    record["fatalities_total"] = fatalities_[0]
+                else:
+                    record["fatalities_total"] = 'NULL'
+
+                passengers = fatalities_[1].replace("passengers:", "")
+                if passengers != '?':
+                    record["fatalities_passengers"] = passengers
+                else:
+                    record["fatalities_passengers"] = 'NULL'
+
+                crew = fatalities_[2].replace("crew:", "")
+                if crew != '?':
+                    record["fatalities_crew"] = crew
+                else:
+                    record["fatalities_crew"] = 'NULL'
+            else:
+                record["aboard_total"] = 'NULL'
+                record["aboard_passengers"] = 'NULL'
+                record["aboard_crew"] = 'NULL'
+        elif key == "Ground:":
+            if not value == '?':
+                record["ground"] = str(value)
+            else:
+                record["ground"] = 'NULL'
+        elif key == "Summary:":
+            if not value == '?':
+                record["summary"] = str(value).replace('\n','')
+            else:
+                record["summary"] = ''
+        elif key == "AC Type:":
+            if not value == '?':
+                record["actype"] = str(value)
+            else:
+                record["actype"] = ''
+        else:
+            st1 = ''.join(tds[0].string.split()).lower()
+            st1 = st1.replace(':', '')
+            if not value == '?':
+                record[st1] = str(value)
+            else:
+                record[st1] = "NULL"
+    return record
+
+### Main Program ###
+
+# Root URL
+rooturl = "http://www.planecrashinfo.com"
+# From which year data is taken
+start_year = 2009
+# to which year data is taken
+end_year = 2009
+
+# Create a new file
+f = csv.writer(open("Airplane_Crashes_and_Fatalities_Since_2009.csv", "w", newline=''), delimiter=',')
+# Header info
+f.writerow(["Date", "Time", "Location", "Operator", "Flight #", "Route", "Type", "Registration", "cn/In", "Aboard", "Fatalities", "Ground", "Summary"])
+
+for i in range(start_year, end_year + 1, 1):
+    year_start = datetime.datetime.utcnow()
+    # appending the path (year) to the url hostname
+    # Sample page : http://www.planecrashinfo.com/2008/2008.htm
+    newurl = rooturl + "/" + str(i) + "/" + str(i) + ".htm"
+    #Get the main page for each year
+    soup = makeBeautifulSoupObject(newurl)
+    tables = soup.find_all('table')
+
+    #Each page contains the sumamry crash info
+    for table in tables:
+        # finding the no. of records for the given year
+        number_of_rows = len(table.findAll(lambda tag: tag.name == 'tr' and tag.findParent('table') == table))
+        number_of_rows = 3
+
+        for j in range(1, number_of_rows, 1):
+            # appending the row number to sub-path of the url, and building the final url that will be used for sending http request
+            #Sample : http://www.planecrashinfo.com/2008/2008-1.htm
+            accident_url = newurl.replace(".htm", "") + "-" + str(j) + ".htm"
+            web_record = makeBeautifulSoupObject(accident_url)
+            # removing all the boilerplate html code except the data table
+            table_details = web_record.find_all('table')
+            #Parse table and return crash record
+            crashRecord = parseHTML(table_details)
+            #Write crash record to file
+            f.writerow([crashRecord["date"].strftime('%m/%d/%Y'),
+                        crashRecord["time"],
+                        crashRecord["loc"],
+                        crashRecord["op"],
+                        crashRecord["flight"],
+                        crashRecord["route"],
+                        crashRecord["actype"],
+                        crashRecord["reg"],
+                        crashRecord["cnln"],
+                        crashRecord["aboard_total"],
+                        # record["aboard_passengers"],
+                        # record["aboard_crew"],
+                        crashRecord["fatalities_total"],
+                        # record["fatalities_passengers"],
+                        # record["fatalities_crew"],
+                        crashRecord["ground"],
+                        crashRecord["summary"]
+                        ])
+```
+
+
 ## Airplane Crashes
 
 ```{r include=TRUE}
 
-apc_raw <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/Airplane_Crashes_and_Fatalities_Since_1908_2017.csv", header=TRUE, sep=",")
+#Original Kaggle file
+apc_raw_to_2009 <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/Airplane_Crashes_and_Fatalities_Since_1908.csv", header=TRUE, sep=",")
+
+#Data we crawl from web
+apc_raw_from_2009 <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/Airplane_Crashes_and_Fatalities_Since_2009.csv", header=TRUE, sep=",")
 
 ```
 
@@ -87,7 +293,6 @@ if(length(necessary_lib)!=0){
 Load necessary libraries
 
 
-
 ```{r echo=TRUE, warning=FALSE, message=FALSE}
 
 library(stringr) # For string manipulation
@@ -103,6 +308,22 @@ library(wordcloud) # word-cloud generator
 library(RColorBrewer) # color palettes
 
 ```
+
+In the next section, we merge the dataset from Kaggle and dataset we crawl in to one dataframe.
+Kaggle dataset contains partial year 2009 data so we omit year 2009 data.
+
+```{r include=TRUE}
+#Clean data greater than year 2009 data from orginal kaggle file due to amended file contains all 2009 crashes
+apc_raw_to_2009 <-  apc_raw_to_2009 %>%
+                    mutate(year=format(as.Date(apc_raw_to_2009$Date, format="%m/%d/%Y"),"%Y")) %>%
+                    filter(as.numeric(year) < 2009) %>%
+                    select(-year)
+
+#Binding data
+apc_raw <- rbind(apc_raw_to_2009, apc_raw_from_2009)
+
+```
+
 
 We first create a new data frame called "apc_clean" which we will manipulate for future analysis.
 
@@ -241,7 +462,7 @@ You can find references for preprocessing from [here](#ref_preprocessing).
 ## Explaining the Dataset & Variables
 
 **Dataset**:
-Airplane crashes from 1908 to 2009. Contains 17 variables, with 5.268 observations.
+Airplane crashes from 1908 to 2017. Contains 17 variables, with 5.543 observations.
 
 Here are the variables in our Airplane Crashes dataset and their explanations:
 
