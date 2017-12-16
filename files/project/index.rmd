@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction {#intro}
 
-This project, by **R_Junkies**, is about past airplane crashes, from 1908 to 2009. The project is prepared specifically for BDA 503, 2017, MEF University; course given by [Berk Orbay](http://berkorbay.me/).
+This project, by **R_Junkies**, is about past airplane crashes, from 1908 to 2017. The project is prepared specifically for BDA 503, 2017, MEF University; course given by [Berk Orbay](http://berkorbay.me/).
 
 ## About Group Members
 
@@ -716,7 +716,6 @@ ggplot(dataSurvival, aes(y=SurvivalRate, x=Year)) +
 We observed that "Survival Rate" was very low in early 1900's and increased over time. As seen in graph, at World War II, survival rate decreases below 10%. After 2000s, it increases to 50% on average.
 
 
-
 ### Possible Causes of Crashes - Word Cloud
 
 For each accident, there is an explanation in "Summary" column. By looking at this summary information, we tried to visuailize a word cloud.
@@ -754,9 +753,10 @@ For each accident, there is an explanation in "Summary" column. By looking at th
  
  # Remove possible words that high frequency in text that no meaning for crash reason
  # (After first try in word cloud, we realize that these words are the most frequent one)
- docs <- tm_map(docs, removeWords, c("aircraft", "plane","flight", "crash")) 
+ docs <- tm_map(docs, removeWords, c("aircraft", "plane","flight", "crash","crashed")) 
  
  dtm <- TermDocumentMatrix(docs)
+ 
  ##Remove sparse terms
  removeSparseTerms(dtm, 0.95)
  m <- as.matrix(dtm)
@@ -770,6 +770,25 @@ For each accident, there is an explanation in "Summary" column. By looking at th
            colors=brewer.pal(8, "Dark2"))
 ```
 
+# Top 10 Frequency of Words
+
+```{r include=TRUE, warning=FALSE}
+
+#Top 10 Word frequencies
+ggplot(d[1:10,], aes(x=reorder(word, -freq), y=freq)) +
+  geom_bar(stat = "identity", fill = "#2780E3") +
+  labs(title="Top 10 Word frequencies",x="Words",y="Frequency",fill="") +
+  theme (axis.text.x=element_text (angle=60,vjust=1, hjust=1))
+
+#How words associated with others. so we can understand causes 
+i <- 1
+
+while (i < 6) {
+  print (findAssocs(dtm, terms = as.character(d[i,]$word), corlimit = 0.3))
+  i = i+1
+}
+
+```
 
 
 <br><br>
