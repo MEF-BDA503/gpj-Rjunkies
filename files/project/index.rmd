@@ -618,7 +618,12 @@ ggplot(dep_acc_fat, aes(y=Departure, x=year)) +
   geom_col(aes(y = Accident / normalizer), fill = "#2780E3") + 
   geom_line(size=1.5, alpha=1, colour = "#7a1c1c") +
   scale_y_continuous(sec.axis = sec_axis(trans= ~.*normalizer, name = 'Accident')) +
-  theme(axis.text.x=element_text(angle=60, vjust=1, hjust=1, size=8))
+  theme(axis.text.y = element_text(colour="#2780E3", size=12), 
+    axis.text.x=element_text(angle=60, vjust=1, hjust=1, size=8),
+    axis.title=element_text(colour="#2780E3", size=12),
+    legend.position = "left" ) +
+  labs(y="Departures", x="Year")
+
 
 ```
 
