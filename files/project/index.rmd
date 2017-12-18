@@ -354,7 +354,7 @@ apc_clean$Ground <- NULL
 ```
 
 Beautiful. We dropped unnecessary columns.<br>
-There are some non-UTF-8 characters in some cells. We should remove them.
+There are some non-ASCII characters in some cells. We should remove them.
 
 ```{r include=TRUE}
 
@@ -512,7 +512,7 @@ Here are the variables in our Airplane Crashes dataset and their explanations:
 
 ## Questions
 
-We studied most of the kernels on [Kaggle](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908/kernels). Majority of the them are not very sophisticated and don't even go beyond basic descriptive analytics. We hope that at the end of our research, we can share our findings on Kaggle. :)
+We studied most of the kernels on [Kaggle](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908/kernels). We hope that at the end of our research, we can share our findings on Kaggle. :)
 <br><br>
 
 + **Question 1:**
