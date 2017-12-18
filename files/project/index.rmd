@@ -40,10 +40,13 @@ Here is the list of datasets and sources we will be using in this project:
 + Airplane Crashes Since 1908 - Kaggle [Link](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908)
 + Air transport, passengers carried (1970-2016) - World Bank [Link](http://databank.worldbank.org/data/reports.aspx?source=2&series=IS.AIR.PSGR&country=)  
 + Air transport, registered carrier departures worldwide (1970-2016) - World Bank [Link](http://databank.worldbank.org/data/reports.aspx?source=2&series=IS.AIR.DPRT&country=) 
++ Airplane Crashes Since 2009 - Plane Crash Info [Link](http://www.planecrashinfo.com)
 
-Our dataset taken from Kaggle contains only data year from 1908 to 2009 (partialy). In order to analyze data more accurately, we crawl dataset from [http://www.planecrashinfo.com/](http://www.planecrashinfo.com/). With the following Pyhton code, we create a new file contains only data from 2009 to 2017.
+Our dataset taken from Kaggle contains crashes from 1908 to mid 2009. In order to analyze data more accurately, we crawled dataset from [http://www.planecrashinfo.com/](http://www.planecrashinfo.com/). With the following Pyhton code, we created a new file contains only data from 2009 to 2017.
 
-```{python}
+
+```{python eval = FALSE}
+
 from bs4 import BeautifulSoup
 import re
 from urllib import request
@@ -240,6 +243,8 @@ for i in range(start_year, end_year + 1, 1):
                         crashRecord["ground"],
                         crashRecord["summary"]
                         ])
+           
+
 ```
 
 
@@ -247,10 +252,10 @@ for i in range(start_year, end_year + 1, 1):
 
 ```{r include=TRUE}
 
-#Original Kaggle file
+# Original Kaggle file
 apc_raw_to_2009 <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/Airplane_Crashes_and_Fatalities_Since_1908.csv", header=TRUE, sep=",")
 
-#Data we crawl from web
+# Data we crawled from PlaneCrashInfo.com
 apc_raw_from_2009 <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjunkies/master/files/project_data/Airplane_Crashes_and_Fatalities_Since_2009.csv", header=TRUE, sep=",")
 
 ```
@@ -276,56 +281,46 @@ air_dprt <- read.csv(file="https://raw.githubusercontent.com/MEF-BDA503/gpj-rjun
 
 # Data Preprocessing & Cleaning
 
-Here are the necessary libraries. We checked if necessary libraries are not installed properly.
+Here are the necessary libraries. We checked if necessary libraries are installed properly.
 
 ```{r echo=TRUE, warning=FALSE, message=FALSE}
-necessary_lib <- c("stringr","tidyverse","ggthemes","grid","gridExtra","scales","tm","SnowballC","wordcloud","RColorBrewer")
 
-# Lets check this necessary libraries against already installed packages.
-necessary_lib <- necessary_lib[!(necessary_lib %in% installed.packages())]
+necessary_lib <- c("stringr","tidyverse","ggthemes","grid","gridExtra","scales","tm","SnowballC","wordcloud","RColorBrewer","plotly","rworldmap")
 
-if(length(necessary_lib)!=0){
-  install.packages(necessary_lib)
+# Lets check these necessary libraries against already installed packages.
+install_lib <- necessary_lib[!(necessary_lib %in% installed.packages())]
+
+if(length(install_lib)!=0){
+  install.packages(install_lib)
 }
 
 ```
 
 Load necessary libraries
 
-
 ```{r echo=TRUE, warning=FALSE, message=FALSE}
 
-library(stringr) # For string manipulation
-library(tidyverse)
-library(ggthemes)
-library(grid)
-library(gridExtra)
-library(scales)
-
-library(tm) # for text mining
-library(SnowballC) # for text stemming
-library(wordcloud) # word-cloud generator 
-library(RColorBrewer) # color palettes
+lapply(necessary_lib, require, character.only = TRUE)
 
 ```
 
-In the next section, we merge the dataset from Kaggle and dataset we crawl in to one dataframe.
-Kaggle dataset contains partial year 2009 data so we omit year 2009 data.
+Next, we merge the dataset from Kaggle and the dataset we crawled from PlaneCrashInfo.<br>
+Kaggle dataset contains duplicate values for 2009 crashes, so we omit them.
 
 ```{r include=TRUE}
-#Clean data greater than year 2009 data from orginal kaggle file due to amended file contains all 2009 crashes
+
 apc_raw_to_2009 <-  apc_raw_to_2009 %>%
                     mutate(year=format(as.Date(apc_raw_to_2009$Date, format="%m/%d/%Y"),"%Y")) %>%
                     filter(as.numeric(year) < 2009) %>%
                     select(-year)
 
-#Binding data
+# Binding datasets
 apc_raw <- rbind(apc_raw_to_2009, apc_raw_from_2009)
 
 ```
 
 
-We first create a new data frame called "apc_clean" which we will manipulate for future analysis.
+We first create a new data frame called "apc_clean" which we will manipulate for our analysis.
 
 ```{r include=TRUE}
 
@@ -359,6 +354,27 @@ apc_clean$Ground <- NULL
 ```
 
 Beautiful. We dropped unnecessary columns.<br>
+There are some non-UTF-8 characters in some cells. We should remove them.
+
+```{r include=TRUE}
+
+nonutfeight <- apc_clean$Operator
+nonutfeight[5315]
+
+apc_clean$Operator  <- gsub("[^\x20-\x7E]", "", nonutfeight)
+apc_clean$Operator[5315]
+
+nonutfeight <- NULL
+
+nonutfeight <- apc_clean$Summary
+nonutfeight[5249]
+
+apc_clean$Summary  <- gsub("[^\x20-\x7E]", "", nonutfeight)
+apc_clean$Summary[5249]
+
+
+```
+
 Now it's time to reshape time-related columns.
 
 ```{r include=TRUE}
@@ -498,12 +514,38 @@ Here are the variables in our Airplane Crashes dataset and their explanations:
 
 ## Questions
 
-We studied most of the kernels on [Kaggle](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908/kernels). Majority of the them are not very sophisticated and don't even go beyond basic descriptive analytics. We hope that at the end of our research, we can share our findings on Kaggle. :) We showed the questions with an asterix (\*) that we got inspired from kernels. Questions without an asterix are developed specifically for this analysis by **R_Junkies**.
+We studied most of the kernels on [Kaggle](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908/kernels). Majority of the them are not very sophisticated and don't even go beyond basic descriptive analytics. We hope that at the end of our research, we can share our findings on Kaggle. :)
 <br><br>
 
-todo: QUESTIONS WILL BE HERE.
-
 ## EDA
+
+### Total Fatalities Over Years
+
+Let's find out how many passengers died over years.
+
+```{r include=TRUE}
+
+total_fatalities <- apc_clean %>% 
+  filter(IsMilitary==0) %>% 
+  group_by(Year) %>%
+  summarize(total_fat=sum(Fatalities)) %>%
+  mutate(total_fat = ifelse(is.na(total_fat), 0, total_fat))
+
+
+ggplot(total_fatalities, aes(x=Year,y=total_fat,group = 1)) +
+  geom_line(aes(y=total_fat), size=0.5, alpha=1, colour="#7a1c1c") +
+  geom_area(fill = "lightblue") +
+  ggtitle("Fatalities of Civil Flights Over Years") +
+  geom_text(aes(label = paste(as.character(round(total_fat/1000,1)), "K")), check_overlap = TRUE, size=2.7, colour = "black", angle=30,nudge_y = -40) +
+  scale_x_discrete(breaks = levels(total_fatalities$Year)[c(T, rep(F, 5))]) +
+  theme (axis.text.x=element_text (angle=60,vjust=1, hjust=1)) +
+  theme(plot.title = element_text(size=11),
+         axis.text=element_text(size=8)) +
+  labs(x = "Years", y = "Fatalities")
+
+```
+
+As we can see, until 90's the trend increases, but later it seems to decline: Less passengers died in airplane crashes.
 
 ### Top 10 Airplane Types & Crashes
 
@@ -614,15 +656,16 @@ dep_acc_fat <- data.frame(year=total_dprt$Time,
 
 normalizer <- max(dep_acc_fat$Accident)/max(dep_acc_fat$Departure)
 
-ggplot(dep_acc_fat, aes(y=Departure, x=year)) +  
-  geom_col(aes(y = Accident / normalizer), fill = "#2780E3") + 
-  geom_line(size=1.5, alpha=1, colour = "#7a1c1c") +
-  scale_y_continuous(sec.axis = sec_axis(trans= ~.*normalizer, name = 'Accident')) +
-  theme(axis.text.y = element_text(colour="#2780E3", size=12), 
+ggplot(dep_acc_fat, aes(y=Accident/normalizer, x=year)) +  
+  geom_col(aes(y = Departure), fill = "#2780E3") + 
+  geom_line(size=1, alpha=1, colour = "#7a1c1c") +
+  ggtitle("Departures [Bar] & Accidents [Line]") +
+  scale_y_continuous(sec.axis = sec_axis(trans= ~.*normalizer, name = 'Departures')) +
+  theme(axis.text.y = element_text(colour="black", size=12), 
     axis.text.x=element_text(angle=60, vjust=1, hjust=1, size=8),
-    axis.title=element_text(colour="#2780E3", size=12),
+    axis.title=element_text(colour="black", size=12),
     legend.position = "left" ) +
-  labs(y="Departures", x="Year")
+  labs(y="Accidents", x="Year")
 
 
 ```
@@ -689,6 +732,73 @@ ggplot(top_six_civ_op_fat_oy, aes(x=Year)) +
 
 ```
 
+### What about Turkish Airlines?
+
+We wondered Turkish Airlines' accidents and fatalities over time.
+
+```{r include=TRUE}
+
+thy <- apc_clean %>%
+        filter(grepl("Turkish",Operator) & IsMilitary ==0) %>%
+        group_by(Operator, Year, Month) %>%
+        summarize(TotalAboard = sum(Aboard), TotalFatalities = sum(Fatalities)) %>%
+        arrange(Year, Month) %>%
+        mutate(MonthName = month.abb[Month]) %>%
+        select(-Month)
+
+p <- plot_ly(thy, x = ~Year, y = ~TotalAboard, type = 'scatter', mode = 'markers', size = ~TotalFatalities, color = ~MonthName, colors = 'Paired',
+        marker = list(opacity = 1, sizemode = 'diameter')) %>%
+  layout(title = 'Turkish Airlines Stats Over Years',
+         xaxis = list(showgrid = FALSE),
+         yaxis = list(showgrid = FALSE),
+         showlegend = TRUE)
+
+p
+
+```
+
+
+### Fatalities Over Total Passengers By Years
+
+The ratio of fatalities over total passengers is important. We want to see the relation between passengers carried and passengers died over the time.
+
+```{r include=TRUE}
+
+
+Total_Passenger_Byyears <- air_psgr %>% 
+                   filter(!is.na(Value)) %>% 
+                   group_by(Time) %>% 
+                   summarize(Value=sum(Value)) %>%
+                  mutate(Year = as.character(Time),Passengers = Value) %>%
+                  select(-Time,-Value)
+
+Total_Fatalities_Byyears <- apc_clean %>% 
+            filter(IsMilitary==0) %>% 
+            group_by(Year) %>%
+            summarize(TotalFatalities = sum(Fatalities)) %>%
+            mutate(TotalFatalities = ifelse(is.na(TotalFatalities), 0, TotalFatalities))
+
+Total_Fatalities_Byyears$Year = as.character(Total_Fatalities_Byyears$Year)
+
+
+death <- inner_join(Total_Passenger_Byyears,Total_Fatalities_Byyears, by = "Year")
+
+death <-death %>%
+            mutate(DRate = TotalFatalities/Passengers*1000000)
+
+
+ggplot(death, aes(x=Year,y=DRate,group = 1)) +
+  geom_line(aes(y=DRate), size=0.5, alpha=1, colour="#7a1c1c") +
+  ggtitle("Fatalities Over Total Passengers By Years") +
+  scale_x_discrete(breaks = levels(total_fatalities$Year)[c(T, rep(F, 5))]) +
+  theme (axis.text.x=element_text (angle=60,vjust=1, hjust=1)) +
+  theme(plot.title = element_text(size=11),
+         axis.text=element_text(size=8)) +
+  labs(x = "Years", y = "Rate")
+```
+
+It is very clear that more passengers were carried, but less passengers died over years. It's a good sign of increase in flight security.
+
 ### Has Survival Rate Increased Over Time?
  
 ```{r include=TRUE, warning=FALSE}
@@ -718,7 +828,7 @@ ggplot(dataSurvival, aes(y=SurvivalRate, x=Year)) +
    
 ```
  
-We observed that "Survival Rate" was very low in early 1900's and increased over time. As seen in graph, at World War II, survival rate decreases below 10%. After 2000s, it increases to 50% on average.
+We observed that "Survival Rate" was very low in early 1900's and increased over time. The trend reverts after beginning of millenium.
 
 
 ### Possible Causes of Crashes - Word Cloud
@@ -775,7 +885,9 @@ For each accident, there is an explanation in "Summary" column. By looking at th
            colors=brewer.pal(8, "Dark2"))
 ```
 
-# Top 10 Frequency of Words
+### Most Frequent 10 Words
+
+Here are the most frequent 10 words, which may show the reason why the accident happened.
 
 ```{r include=TRUE, warning=FALSE}
 
@@ -795,20 +907,86 @@ while (i < 6) {
 
 ```
 
+### Where do accidents occur?
 
-<br><br>
+We prepare a world map that shows dangerous countries for flights.
 
-# Dynamic Map of Airplane Crashes
-todo: SHINY
-<br><br>
+```{r include=TRUE}
 
-# Forecasting & Machine Learning
-todo: PCA, Modelling etc.
+# Crashes
+apc_civilcrashes <- apc_clean %>%
+                    select(State) %>%
+                    filter(apc_clean$IsMilitary==0) %>%
+                    group_by(State) %>%
+                    summarise(Totalcrash=n())
+
+apc_civilcrashes$State <- ifelse(apc_civilcrashes$State %in% state.name,"United States",apc_civilcrashes$State)
+
+apc_civilcrashes <- apc_civilcrashes %>%
+                    group_by(State) %>%
+                    summarise(Totalcrash=sum(Totalcrash))
+
+sPDF <- joinCountryData2Map(apc_civilcrashes, joinCode="NAME", nameJoinColumn="State")
+
+mapParams<-mapCountryData(sPDF
+                          , nameColumnToPlot = "Totalcrash"
+                          , mapTitle= "Most Dangerous Countries by Crashes"
+                          , colourPalette=brewer.pal(9, "YlOrRd")
+                          , missingCountryCol = "white"
+                          , oceanCol = "lightsteelblue2"
+                          , numCats=9
+                          , catMethod="fixedWidth"
+)
+do.call(addMapLegend, c(mapParams
+                        , legendLabels="all"
+                        , legendIntervals="page"
+))
+
+# Fatalities
+apc_civilfat <- apc_clean %>%
+                  select(State,Fatalities) %>%
+                  filter(apc_clean$IsMilitary==0) %>%
+                  group_by(State) %>%
+                  summarise(TotalFat=sum(Fatalities))
+
+apc_civilfat$State <- ifelse(apc_civilfat$State %in% state.name,"United States",apc_civilfat$State)
+
+apc_civilfat <- apc_civilfat %>%
+                group_by(State) %>%
+                summarise(TotalFat=sum(TotalFat))
+
+sPDF <- joinCountryData2Map(apc_civilfat, joinCode="NAME", nameJoinColumn="State")
+
+mapParams<-mapCountryData(sPDF
+                          , nameColumnToPlot = "TotalFat"
+                          , mapTitle= "Most Dangerous Countries by Fatalities"
+                          , colourPalette=brewer.pal(9, "YlOrRd")
+                          , missingCountryCol = "white"
+                          , oceanCol = "lightsteelblue2"
+                          , numCats=9
+                          , catMethod="fixedWidth"
+)
+do.call(addMapLegend, c(mapParams
+                        , legendLabels="all"
+                        , legendIntervals="page"
+))
+
+```
+
+USA, Russia and Brazil seem to be the most dangerous places not to travel via plane!
+
+
+
+
+
+
+
+
+
 <br><br>
 
 # Conclusion
 
-todo: Findings & insights for future researches
 <br><br>
 
 <br><br>
@@ -820,6 +998,7 @@ todo: Findings & insights for future researches
 + [StackOverFlow](http://www.stackoverflow.com)
 + [Kaggle Kernel: Military VS Civilian Crashes](https://www.kaggle.com/adhok93/military-vs-civilian-crashes/code)
 + [Kaggle Kernel: Data Cleaning via Airplane Crashes](https://www.kaggle.com/danielviray/data-cleaning-via-airplane-crashes)
++ [How to clear non-ascii characters from string?](https://gist.github.com/nassimhaddad/4643587)
 
 We understood how to differentiate whether an operator is Military institution or a Civilian operator from adhok93's kernel.
 <br><br>
@@ -828,7 +1007,4 @@ We got a lot of help from danielviray's kernel in order to accomplish data prepr
 ## EDA {#ref_eda}
 
 + [Word Cloud Fundamentals](http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know)
-
-
-
 
