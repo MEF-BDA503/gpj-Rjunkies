@@ -298,7 +298,7 @@ if(length(install_lib)!=0){
 
 Load necessary libraries
 
-```{r echo=TRUE, warning=FALSE, message=FALSE}
+```{r echo=TRUE, results=FALSE, warning=FALSE, message=FALSE}
 
 lapply(necessary_lib, require, character.only = TRUE)
 
@@ -506,15 +506,41 @@ Here are the variables in our Airplane Crashes dataset and their explanations:
 
 + Visualizing results of exploratory analysis
 
-+ Demonstrating geolocations of airplane crashes on a dynamic map (Using Shiny)
++ Demonstrating geolocations of airplane crashes on a static map
 
-+ Forecasting least risky flights for our future travel plans :)
-
-+ Developing and demonstrating R, RMarkdown & Shiny skills of **R_Junkies**
++ Developing and demonstrating R & RMarkdown skills of **R_Junkies**
 
 ## Questions
 
 We studied most of the kernels on [Kaggle](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908/kernels). Majority of the them are not very sophisticated and don't even go beyond basic descriptive analytics. We hope that at the end of our research, we can share our findings on Kaggle. :)
+<br><br>
+
++ **Question 1:**
+How many passengers died in airplane crashes since 1908?
+<br>
++ **Question 2:**
+Which airplanes have most records of crashes so far?
+<br>
++ **Question 3:**
+How many accidents occured, compared to number of departures over years?
+<br>
++ **Question 4:**
+Which civil operators have the most records of accidents and fatalities?
+<br>
++ **Question 5:**
+What is the crash history of Turkish Airlines?
+<br>
++ **Question 6:**
+Have airplane flights gotten more secure over time?
+<br>
++ **Question 7:**
+Has survival rate of a single airplane crash increased over time?
+<br>
++ **Question 8:**
+What are the causes of airplane crashes?
+<br>
++ **Question 9:**
+In which countries the most airplane accidents occured?
 <br><br>
 
 ## EDA
@@ -732,7 +758,7 @@ ggplot(top_six_civ_op_fat_oy, aes(x=Year)) +
 
 ```
 
-### What about Turkish Airlines?
+### Crash History of Turkish Airlines
 
 We wondered Turkish Airlines' accidents and fatalities over time.
 
@@ -974,21 +1000,22 @@ do.call(addMapLegend, c(mapParams
 ```
 
 USA, Russia and Brazil seem to be the most dangerous places not to travel via plane!
-
-
-
-
-
-
-
-
-
 <br><br>
 
 # Conclusion
 
+We tried to answer 9 questions prepared for airplane crashes dataset. It seems that there are less airplane crashes nowadays. We hope that they will never happen in near & far future. :)
 <br><br>
+You are welcome to ask any questions or give suggestions. Thanks to Berk Orbay for his contributions and his instant replies. He enabled us to develop our coding skills.
 
+# Future Research Suggestions
+
++ More cleaning of "Route", "Source" & "Destination" variables, using advanced string manipulation, since there are some edge cases
++ More cleaning of "State" variable, since we can't show all crashes on world map
++ Adding "Ground" variable (Non-passenger people died on the ground) to analysis
++ Dynamic Map of Airplane Crashes, using Shiny
++ Most dangerous routes as lines on world-map
++ Predicting crash possibility of a flight using Machine Learning tools
 <br><br>
 
 # References {#references}
@@ -1006,5 +1033,10 @@ We got a lot of help from danielviray's kernel in order to accomplish data prepr
 
 ## EDA {#ref_eda}
 
++ [A Look At Air France Crashes](https://www.kaggle.com/tentotheminus9/a-look-at-air-france-crashes/code)
++ [Causes of aircraft crash](https://www.kaggle.com/junzis/causes-of-aircraft-crash/notebook)
++ [Airplane Crashes](https://www.kaggle.com/xingobar/airplane-crashes)
++ [Analysing airplane crashes.](https://www.kaggle.com/arathee2/analysing-airplane-crashes)
++ [Exploring Airplane Crashes](https://www.kaggle.com/dmitriy19/exploring-airplane-crashes)
++ [Location of crashes, causes of crash and more](https://www.kaggle.com/salvadordali/location-of-crashes-causes-of-crash-and-more)
 + [Word Cloud Fundamentals](http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know)
-
