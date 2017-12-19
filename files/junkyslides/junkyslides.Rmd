@@ -1,10 +1,6 @@
 ---
 title: "R_Junkies Group Project"
-output: 
-  ioslides_presentation:
-    widescreen: true
-    smaller: true
-    template: quarterly_report.html   
+output: ioslides_presentation
 
 ---
 
