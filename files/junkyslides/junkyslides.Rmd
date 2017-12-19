@@ -4,12 +4,8 @@ output:
   ioslides_presentation:
     widescreen: true
     smaller: true
-    
-slides > slide:not(.nobackground):before {
-  width: 150px;
-  height: 75px;
-  background-size: 150px 75px;
-}
+    template: quarterly_report.html   
+
 ---
 
 ```{r setup, include=FALSE}
