@@ -75,13 +75,11 @@ include_graphics("3.png")
 
 ## Top Civil Operators’ Crashes & Fatalities | Over Years
 
-```{r  out.width = "45%"}
+```{r  out.width = "50%"}
 include_graphics("41.png") 
-```
-
-```{r  out.width = "45%"}
 include_graphics("42.png") 
 ```
+
 
 ## Crash History of Turkish Airlines
 
@@ -91,7 +89,7 @@ include_graphics("5.png")
 
 ## Fatalities & Total Passengers | Over Years
 
-```{r  out.width = "80%"}
+```{r out.width = "80%"}
 include_graphics("6.png") 
 ```
 
@@ -103,24 +101,19 @@ include_graphics("7.png")
 
 ## Possible Causes of Crashes | Word Cloud
 
-```{r  out.width = "45%"}
+```{r , out.width="50%"}
 include_graphics("81.png") 
-```
-
-```{r  out.width = "45%"}
 include_graphics("82.png") 
 ```
 
 
 ## Where do accidents occur?
 
-```{r  out.width = "45%"}
+```{r , out.width="50%"}
 include_graphics("91.png") 
-```
-
-```{r  out.width = "45%"}
 include_graphics("92.png") 
 ```
+
 
 ## Conclusion
 
