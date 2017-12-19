@@ -5,6 +5,8 @@ output: ioslides_presentation
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+
 ```
 
 ## R_Junkies | Group members:
@@ -52,40 +54,75 @@ Airplane Crashes Since 2009 - Plane Crash Info<br><br>
 
 ## Total Fatalities Over Years
 
-![](1.jpg)
+```{r  out.width = "95%"}
+include_graphics("1.png") 
+```
+
+
 
 ## Top 10 Airplane Types & Crashes
 
-![](2.jpg)
+```{r  out.width = "95%"}
+include_graphics("2.png") 
+```
 
 ## Comparing Accidents & Departures
 
-![](3.jpg)
+```{r  out.width = "90%"}
+include_graphics("3.png") 
+```
 
 ## Top Civil Operators’ Crashes & Fatalities | Over Years
 
-![](4.jpg)
+```{r  out.width = "45%"}
+include_graphics("41.png") 
+```
+
+```{r  out.width = "45%"}
+include_graphics("42.png") 
+```
 
 ## Crash History of Turkish Airlines
 
-![](5.jpg)
+```{r  out.width = "80%"}
+include_graphics("5.png") 
+```
 
 ## Fatalities & Total Passengers | Over Years
 
-![](6.jpg)
+```{r  out.width = "80%"}
+include_graphics("6.png") 
+```
 
 ## Has Survival Rate Increased Over Time?
 
-![](7.jpg)
+```{r  out.width = "90%"}
+include_graphics("7.png") 
+```
 
 ## Possible Causes of Crashes | Word Cloud
 
-![](8.jpg)
+```{r  out.width = "45%"}
+include_graphics("81.png") 
+```
+
+```{r  out.width = "45%"}
+include_graphics("82.png") 
+```
+
 
 ## Where do accidents occur?
 
-![](9.jpg)
+```{r  out.width = "45%"}
+include_graphics("91.png") 
+```
+
+```{r  out.width = "45%"}
+include_graphics("92.png") 
+```
 
 ## Conclusion
 
-![](humor.jpg)
+```{r  out.width = "75%"}
+include_graphics("humor.jpg") 
+```
