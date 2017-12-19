@@ -1,6 +1,9 @@
 ---
 title: "R_Junkies Group Project"
-output: ioslides_presentation
+output: 
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
 ---
 
 ```{r setup, include=FALSE}
