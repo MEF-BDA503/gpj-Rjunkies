@@ -26,7 +26,7 @@ Group members are below (Ladies first):
 
 + [Yağmur Ulutürk Tekten](https://tr.linkedin.com/in/yagmuruluturk)
 + [Cem Gürkan](https://tr.linkedin.com/in/cgurkan)
-+ [Rezan Azizoğlu](https://tr.linkedin.com/in/umut-rezan-azizoglu-b6683146)
++ [Umut R Azizoğlu](https://tr.linkedin.com/in/umut-rezan-azizoglu-b6683146)
 + [Semih Tekten](https://tr.linkedin.com/in/semihtekten)
 
 ## About R Markdown
