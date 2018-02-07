@@ -42,10 +42,10 @@ Here is the list of datasets and sources we will be using in this project:
 + Air transport, registered carrier departures worldwide (1970-2016) - World Bank [Link](http://databank.worldbank.org/data/reports.aspx?source=2&series=IS.AIR.DPRT&country=) 
 + Airplane Crashes Since 2009 - Plane Crash Info [Link](http://www.planecrashinfo.com)
 
-Our dataset taken from Kaggle contains crashes from 1908 to mid 2009. In order to analyze data more accurately, we crawled dataset from [http://www.planecrashinfo.com/](http://www.planecrashinfo.com/). With the following Pyhton code, we created a new file contains only data from 2009 to 2017.
+Our dataset taken from Kaggle contains crashes from 1908 to mid 2009. In order to analyze data more accurately, we crawled dataset from [http://www.planecrashinfo.com/](http://www.planecrashinfo.com/). With the following Python code, we created a new file contains only data from 2009 to 2017.
 
 
-```{python eval = FALSE}
+```{python python.reticulate = FALSE, eval=FALSE}
 
 from bs4 import BeautifulSoup
 import re
@@ -55,136 +55,136 @@ import csv
 
 # Request URL and return response as BeautifulSoup object
 def makeBeautifulSoupObject(url):
-    requestConn = request.urlopen(url)
-    responseHTML = requestConn.read()
-    requestConn.close()
-    soup = BeautifulSoup(responseHTML, "lxml")
-    soup.decode(eventual_encoding="UTF-8")
-    return soup
+  requestConn = request.urlopen(url)
+responseHTML = requestConn.read()
+requestConn.close()
+soup = BeautifulSoup(responseHTML, "lxml")
+soup.decode(eventual_encoding="UTF-8")
+return soup
 
 def parseHTML(table_):
-    record = {}
-    table = BeautifulSoup(str(table_[0]), 'html.parser')
+  record = {}
+table = BeautifulSoup(str(table_[0]), 'html.parser')
 
-    for tr in table.find_all("tr")[1:]:
-        tds = tr.find_all("td")
-        # encoding the 'value' string to utf-8 and removing any non-breaking space (HTML Character)
-        tmp_str = tds[1].string  # .string.encode('utf-8').replace("&nbsp;", "")
-        value = str(tmp_str)  # this is the value- In Column #2 of the HTML table
-        key = tds[0].string  # this is the key- In Column #1 of the HTML table
-        # print(tds[0])
-        if key == "Date:":
-            dat = str(value).replace(',', '')
-            date = datetime.datetime.strptime(dat, '%B %d %Y')
-            record["date"] = date
-        elif key == "Time:":
-            if not value == '?':
-                time = re.sub("[^0-9]", "", value)
-                record["time"] = time[0:2] + ":" + time[2:4]
-            else:
-                record["time"] = ''
-        elif key == "Location:":
-            if not value == '?':
-                record["loc"] = str(value)
-            else:
-                record["loc"] = ''
-        elif key == "Operator:":
-            if not value == '?':
-                record["op"] = str(value)
-            else:
-                record["op"] = ''
-        elif key == "Flight #:":
-            if not value == '?':
-                record["flight"] = str(value)
-            else:
-                record["flight"] = ''
-        elif key == "Route:":
-            if not value == '?':
-                record["route"] = str(value)
-            else:
-                record["route"] = ''
-        elif key == "Registration:":
-            if not value == '?':
-                record["reg"] = str(value).encode("utf-8")
-            else:
-                record["reg"] = ''
-        elif key == "cn / ln:":
-            if not value == '?':
-                record["cnln"] = str(value)
-            else:
-                record["cnln"] = ''
-        elif key == "Aboard:":
-            if not value == '?':
-                s = ' '.join(value.split())
-                aboard_ = s.replace('(', '').replace(')', '').split(' ')
-                if aboard_[0] != '?':
-                    record["aboard_total"] = aboard_[0]
-                else:
-                    record["aboard_total"] = 'NULL'
+for tr in table.find_all("tr")[1:]:
+  tds = tr.find_all("td")
+# encoding the 'value' string to utf-8 and removing any non-breaking space (HTML Character)
+tmp_str = tds[1].string  # .string.encode('utf-8').replace("&nbsp;", "")
+value = str(tmp_str)  # this is the value- In Column #2 of the HTML table
+key = tds[0].string  # this is the key- In Column #1 of the HTML table
+# print(tds[0])
+if key == "Date:":
+  dat = str(value).replace(',', '')
+date = datetime.datetime.strptime(dat, '%B %d %Y')
+record["date"] = date
+elif key == "Time:":
+  if not value == '?':
+  time = re.sub("[^0-9]", "", value)
+record["time"] = time[0:2] + ":" + time[2:4]
+else:
+  record["time"] = ''
+elif key == "Location:":
+  if not value == '?':
+  record["loc"] = str(value)
+else:
+  record["loc"] = ''
+elif key == "Operator:":
+  if not value == '?':
+  record["op"] = str(value)
+else:
+  record["op"] = ''
+elif key == "Flight #:":
+  if not value == '?':
+  record["flight"] = str(value)
+else:
+  record["flight"] = ''
+elif key == "Route:":
+  if not value == '?':
+  record["route"] = str(value)
+else:
+  record["route"] = ''
+elif key == "Registration:":
+  if not value == '?':
+  record["reg"] = str(value).encode("utf-8")
+else:
+  record["reg"] = ''
+elif key == "cn / ln:":
+  if not value == '?':
+  record["cnln"] = str(value)
+else:
+  record["cnln"] = ''
+elif key == "Aboard:":
+  if not value == '?':
+  s = ' '.join(value.split())
+aboard_ = s.replace('(', '').replace(')', '').split(' ')
+if aboard_[0] != '?':
+  record["aboard_total"] = aboard_[0]
+else:
+  record["aboard_total"] = 'NULL'
 
-                passengers = aboard_[1].replace("passengers:", "")
-                if passengers != '?':
-                    record["aboard_passengers"] = passengers
-                else:
-                    record["aboard_passengers"] = 'NULL'
+passengers = aboard_[1].replace("passengers:", "")
+if passengers != '?':
+  record["aboard_passengers"] = passengers
+else:
+  record["aboard_passengers"] = 'NULL'
 
-                crew = aboard_[2].replace("crew:", "")
-                if crew != '?':
-                    record["aboard_crew"] = crew
-                else:
-                    record["aboard_crew"] = 'NULL'
-            else:
-                record["aboard_total"] = 'NULL'
-                record["aboard_passengers"] = 'NULL'
-                record["aboard_crew"] = 'NULL'
-        elif key == "Fatalities:":
-            if not value == '?':
-                s = ' '.join(value.split())
-                fatalities_ = s.replace('(', '').replace(')', '').split(' ')
+crew = aboard_[2].replace("crew:", "")
+if crew != '?':
+  record["aboard_crew"] = crew
+else:
+  record["aboard_crew"] = 'NULL'
+else:
+  record["aboard_total"] = 'NULL'
+record["aboard_passengers"] = 'NULL'
+record["aboard_crew"] = 'NULL'
+elif key == "Fatalities:":
+  if not value == '?':
+  s = ' '.join(value.split())
+fatalities_ = s.replace('(', '').replace(')', '').split(' ')
 
-                if fatalities_[0] != '?':
-                    record["fatalities_total"] = fatalities_[0]
-                else:
-                    record["fatalities_total"] = 'NULL'
+if fatalities_[0] != '?':
+  record["fatalities_total"] = fatalities_[0]
+else:
+  record["fatalities_total"] = 'NULL'
 
-                passengers = fatalities_[1].replace("passengers:", "")
-                if passengers != '?':
-                    record["fatalities_passengers"] = passengers
-                else:
-                    record["fatalities_passengers"] = 'NULL'
+passengers = fatalities_[1].replace("passengers:", "")
+if passengers != '?':
+  record["fatalities_passengers"] = passengers
+else:
+  record["fatalities_passengers"] = 'NULL'
 
-                crew = fatalities_[2].replace("crew:", "")
-                if crew != '?':
-                    record["fatalities_crew"] = crew
-                else:
-                    record["fatalities_crew"] = 'NULL'
-            else:
-                record["aboard_total"] = 'NULL'
-                record["aboard_passengers"] = 'NULL'
-                record["aboard_crew"] = 'NULL'
-        elif key == "Ground:":
-            if not value == '?':
-                record["ground"] = str(value)
-            else:
-                record["ground"] = 'NULL'
-        elif key == "Summary:":
-            if not value == '?':
-                record["summary"] = str(value).replace('\n','')
-            else:
-                record["summary"] = ''
-        elif key == "AC Type:":
-            if not value == '?':
-                record["actype"] = str(value)
-            else:
-                record["actype"] = ''
-        else:
-            st1 = ''.join(tds[0].string.split()).lower()
-            st1 = st1.replace(':', '')
-            if not value == '?':
-                record[st1] = str(value)
-            else:
-                record[st1] = "NULL"
-    return record
+crew = fatalities_[2].replace("crew:", "")
+if crew != '?':
+  record["fatalities_crew"] = crew
+else:
+  record["fatalities_crew"] = 'NULL'
+else:
+  record["aboard_total"] = 'NULL'
+record["aboard_passengers"] = 'NULL'
+record["aboard_crew"] = 'NULL'
+elif key == "Ground:":
+  if not value == '?':
+  record["ground"] = str(value)
+else:
+  record["ground"] = 'NULL'
+elif key == "Summary:":
+  if not value == '?':
+  record["summary"] = str(value).replace('\n','')
+else:
+  record["summary"] = ''
+elif key == "AC Type:":
+  if not value == '?':
+  record["actype"] = str(value)
+else:
+  record["actype"] = ''
+else:
+  st1 = ''.join(tds[0].string.split()).lower()
+st1 = st1.replace(':', '')
+if not value == '?':
+  record[st1] = str(value)
+else:
+  record[st1] = "NULL"
+return record
 
 ### Main Program ###
 
@@ -201,49 +201,49 @@ f = csv.writer(open("Airplane_Crashes_and_Fatalities_Since_2009.csv", "w", newli
 f.writerow(["Date", "Time", "Location", "Operator", "Flight #", "Route", "Type", "Registration", "cn/In", "Aboard", "Fatalities", "Ground", "Summary"])
 
 for i in range(start_year, end_year + 1, 1):
-    year_start = datetime.datetime.utcnow()
-    # appending the path (year) to the url hostname
-    # Sample page : http://www.planecrashinfo.com/2008/2008.htm
-    newurl = rooturl + "/" + str(i) + "/" + str(i) + ".htm"
-    #Get the main page for each year
-    soup = makeBeautifulSoupObject(newurl)
-    tables = soup.find_all('table')
+  year_start = datetime.datetime.utcnow()
+# appending the path (year) to the url hostname
+# Sample page : http://www.planecrashinfo.com/2008/2008.htm
+newurl = rooturl + "/" + str(i) + "/" + str(i) + ".htm"
+#Get the main page for each year
+soup = makeBeautifulSoupObject(newurl)
+tables = soup.find_all('table')
 
-    #Each page contains the sumamry crash info
-    for table in tables:
-        # finding the no. of records for the given year
-        number_of_rows = len(table.findAll(lambda tag: tag.name == 'tr' and tag.findParent('table') == table))
-        number_of_rows = 3
+#Each page contains the sumamry crash info
+for table in tables:
+  # finding the no. of records for the given year
+  number_of_rows = len(table.findAll(lambda tag: tag.name == 'tr' and tag.findParent('table') == table))
+number_of_rows = 3
 
-        for j in range(1, number_of_rows, 1):
-            # appending the row number to sub-path of the url, and building the final url that will be used for sending http request
-            #Sample : http://www.planecrashinfo.com/2008/2008-1.htm
-            accident_url = newurl.replace(".htm", "") + "-" + str(j) + ".htm"
-            web_record = makeBeautifulSoupObject(accident_url)
-            # removing all the boilerplate html code except the data table
-            table_details = web_record.find_all('table')
-            #Parse table and return crash record
-            crashRecord = parseHTML(table_details)
-            #Write crash record to file
-            f.writerow([crashRecord["date"].strftime('%m/%d/%Y'),
-                        crashRecord["time"],
-                        crashRecord["loc"],
-                        crashRecord["op"],
-                        crashRecord["flight"],
-                        crashRecord["route"],
-                        crashRecord["actype"],
-                        crashRecord["reg"],
-                        crashRecord["cnln"],
-                        crashRecord["aboard_total"],
-                        # record["aboard_passengers"],
-                        # record["aboard_crew"],
-                        crashRecord["fatalities_total"],
-                        # record["fatalities_passengers"],
-                        # record["fatalities_crew"],
-                        crashRecord["ground"],
-                        crashRecord["summary"]
-                        ])
-           
+for j in range(1, number_of_rows, 1):
+  # appending the row number to sub-path of the url, and building the final url that will be used for sending http request
+  #Sample : http://www.planecrashinfo.com/2008/2008-1.htm
+  accident_url = newurl.replace(".htm", "") + "-" + str(j) + ".htm"
+web_record = makeBeautifulSoupObject(accident_url)
+# removing all the boilerplate html code except the data table
+table_details = web_record.find_all('table')
+#Parse table and return crash record
+crashRecord = parseHTML(table_details)
+#Write crash record to file
+f.writerow([crashRecord["date"].strftime('%m/%d/%Y'),
+            crashRecord["time"],
+            crashRecord["loc"],
+            crashRecord["op"],
+            crashRecord["flight"],
+            crashRecord["route"],
+            crashRecord["actype"],
+            crashRecord["reg"],
+            crashRecord["cnln"],
+            crashRecord["aboard_total"],
+            # record["aboard_passengers"],
+            # record["aboard_crew"],
+            crashRecord["fatalities_total"],
+            # record["fatalities_passengers"],
+            # record["fatalities_crew"],
+            crashRecord["ground"],
+            crashRecord["summary"]
+            ])
+
 
 ```
 
@@ -757,6 +757,103 @@ ggplot(top_six_civ_op_fat_oy, aes(x=Year)) +
   labs(x = "Years", y = "Fatalities", colour = "Operators")
 
 ```
+
+****
+
+### Update
+
+One of the feedbacks we had is that the line graphs "__Fatalities of Top 6 Operators with Most Crashes/Fatalities Over Years__" are not so easy to interpret. For that reason, we decided to convert them to a new heat map and show fatalities of top 10 civil operators with most fatalities over decades. We will generate a new data frame from our clean data using __dplyr__, and visualise it with __ggplot2__.
+
+Now we generate a new data frame, '__hm_df__' from __apc_clean__. __hm_df__ will contain _Operator_, _YearRange_, _Fatalities_. And we need complete cases for visualization.
+
+```{r include=TRUE}
+
+hm_df <- apc_clean %>%
+          select(Operator, Year, Fatalities, IsMilitary) %>%
+          filter(IsMilitary == 0) %>%
+          select(Operator, Year, Fatalities) %>%
+          filter(Operator != "")
+
+hm_df <- hm_df[complete.cases(hm_df), ]
+
+```
+
+Now we need to generate a new column, '__YearRange__' in order to find decades. We will use __group_by__.
+
+```{r include=TRUE}
+
+hm_df <- hm_df %>%
+    mutate(Year = as.numeric(as.character(Year))) %>%
+    mutate(YearRange = paste( as.character( Year - (Year %% 10)),
+                              as.character(Year - (Year %% 10) + 9),
+                              sep = " - ")) %>%
+    select(-Year) %>%
+    group_by(Operator,YearRange) %>%
+    summarise(Fatalities = sum(Fatalities)) %>%
+    filter(Fatalities > 0) %>%
+    arrange(Operator, YearRange)
+
+```
+
+We want to show only top 10 operators with most fatalities. So we are going to find them. We will name it as __civ_op_topten_fat__.
+
+
+```{r include=TRUE}
+
+civ_op_topten_fat <- apc_clean %>%
+                      filter(IsMilitary == 0) %>%
+                      select(Operator, Fatalities) %>%
+                      group_by(Operator) %>%
+                      summarise(Fatalities = sum(Fatalities)) %>%
+                      arrange(desc(Fatalities)) %>%
+                      slice(1:10) %>%
+                      select(Operator)
+
+```
+
+Beautiful. Let's join __hm_df__ with __civ_op_topten_fat__!
+
+```{r include=TRUE}
+
+hm_df <- hm_df %>% inner_join(., civ_op_topten_fat, by='Operator')
+head(hm_df)
+
+```
+
+Since our data frame is ready for visualization, we can start using __ggplot2__.
+
+
+```{r include=TRUE}
+
+ggplot(hm_df, aes(YearRange, Operator)) +
+  theme_classic() +
+  geom_tile(aes(fill = Fatalities), colour = "black") +
+  scale_fill_gradient(low = "#d0dee8", high = "#152a3a") +
+  theme(panel.background = element_rect(fill = "#e3e9ed", colour = "black")) +
+  labs(title='Fatalities of Top 10 Civil Operators Over Decades [With Aeroflot]', x='Decades', y='Operators') +
+  theme(plot.title = element_text(hjust = 0.0, size=11)) +
+  theme(axis.text.x=element_text(angle = 45, hjust = 1, size = 8))
+
+```
+
+Not so good! The variation between fatalities can't be observed. When we searched for a reason, we figured out that there is an outlier: Aeroflot! In 70s they got more than 3K fatalities! It is very sad story for Aeroflot. Anyways, we decided to remove Aeroflot from visualization and generated a new heatmap.
+
+```{r include=TRUE}
+
+hm_df <- hm_df %>% filter(Operator != 'Aeroflot')
+
+ggplot(hm_df, aes(YearRange, Operator)) +
+  theme_classic() +
+  geom_tile(aes(fill = Fatalities), colour = "black") +
+  scale_fill_gradient(low = "#d0dee8", high = "#152a3a") +
+  theme(panel.background = element_rect(fill = "#e3e9ed", colour = "black")) +
+  labs(title='Fatalities of Top 10 Civil Operators Over Decades [Without Aeroflot]', x='Decades', y='Operators') +
+  theme(plot.title = element_text(hjust = 0.0, size=11)) +
+  theme(axis.text.x=element_text(angle = 45, hjust = 1, size = 8))
+
+```
+
+The heatmap is now better than the line graph we used early. As we have discussed in class, between 70s and 90s the world experienced lots of airplane crashes with lots of fatalities! But now this trend reverted to a decline. (Don't overlook THY in 70s! There is a terrible crash in 1974.)
 
 ### Crash History of Turkish Airlines
 
